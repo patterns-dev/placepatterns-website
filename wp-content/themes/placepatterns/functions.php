@@ -1,5 +1,6 @@
 <?php
 add_action('init', 'types_register');
+add_action( 'wp_loaded', 'connections_register' );
  
 function types_register() {
  
@@ -62,6 +63,17 @@ function types_register() {
 		'supports' => array('title','editor','thumbnail')
 	  ); 
  
-	register_post_type( 'place' , $place_args );	
-	
+	register_post_type( 'place' , $place_args );		
+}
+
+function connections_register() {
+
+	if ( !function_exists( 'p2p_register_connection_type' ) )
+		return;
+
+	p2p_register_connection_type( array(
+		'name' => 'places_to_patterns',
+		'from' => 'place',
+		'to' => 'pattern'
+	) );
 }
