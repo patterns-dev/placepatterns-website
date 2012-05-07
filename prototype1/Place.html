@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Place</title>
+<link href='http://fonts.googleapis.com/css?family=Simonetta' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" media="screen, projection">
+<link rel="stylesheet" href="css/blueprint/print.css" type="text/css" media="print">
+<!--[if lt IE 8]>
+  <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection">
+<![endif]-->
+<link rel="stylesheet" href="css/place.css" />
+
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+
+<script type="text/javascript" src="js/jquery-ui-1.8.18.custom.min.js"></script>
+
+<!-- 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript"> 
+	google.load("jquery", "1.7.1");
+	google.load("jqueryui", "1");
+</script>
+-->
+
+<script type="text/javascript">
+	function choose(object)
+	{
+		$(object).siblings().fadeTo(500, 0.1, function() {
+            $(object).siblings().slideUp(750, function() { 
+					$('#question2').fadeIn();
+					$('#optionBox2').fadeIn();			
+				});
+		    $(object).addClass('selectedOption',750);
+		});
+
+ 		return false;
+	}
+	function displayImages()
+	{
+		$('.patternBlock').each(function(i) {
+            $(this).delay(750+i*500).fadeIn(); 
+        });
+
+	}
+	
+	$(document).ready(function() {
+    	$('#optionBox1 .option').click( function() { choose(this); } );
+    	$('#optionBox2 .option').click( function() { choose(this); displayImages(); } );		
+	});
+	
+	
+	//Hacked for demo purposes
+	
+</script>
+</head>
+
+<body>
+<div class="container">
+
+	<div class="span-24" id="header">
+    	<div class="span-5 prepend-1" id="sitename">
+			<h1><a href="place.html">place</a></h1>
+            <h2>PlacePatterns.com</h2>
+		</div>
+        <div class="span-4 prepend-13" id="search">
+			<input id="search" name="search" type="text" value="search" size="24" />
+        </div>
+	</div>
+    <hr/>
+    <div id="main" class="span-22 prepend-2">
+    	<span class="question" id="question1">my place is&nbsp;</span>
+    	<div class="optionBox" id="optionBox1">
+        	<span class="option" id="apt" >a home</span>
+            <span class="option" id="school">a school</span>
+            <span class="option" id="building"  >a building</span>         
+    	    <span class="option" id="farm" >a farm</span>
+    	    <span class="option" id="neighborhood">a neighborhood</span>
+    	    <span class="option" id="city">a city</span>
+        </div>
+        <span class="question" id="question2" style="display: none;">&nbsp;in the&nbsp;</span>
+        <div class="optionBox" id="optionBox2" style="display: none;">
+            <span class="option" id="city">city</span>
+            <span class="option" id="suburbs">suburbs</span>
+            <span class="option" id="country">country</span>        
+        </div>
+        <div class="clear"></div>
+        <div id="patternContainer" >
+        	<div class="patternBlock">
+				<img class="patternImage" src="images/Attached Buildings.jpg" />
+                <span class="patternName">
+                	Attached Buildings 
+                </span>
+            </div> 
+        	<div class="patternBlock">
+				<img class="patternImage" src="images/HangingGarden.jpg" />
+                <span class="patternName"> 
+					Hanging Garden
+                </span>
+            </div> 
+         	<div class="patternBlock">
+            <a href="WickingBed.html">
+				<img class="patternImage" src="images/WickingBed.jpg"/>
+                <span class="patternName">
+                	Wicking Bed 
+                </span>
+                </a>
+            </div>             
+              
+        	<div class="patternBlock">
+				<img class="patternImage" src="images/swimminHole.jpg" />
+                <span class="patternName">
+                	 Proximity to Water
+                </span>
+            </div>             
+        	<div class="patternBlock">
+				<img class="patternImage" src="images/Barcelona.jpg" />
+                <span class="patternName"> 
+                	Distinct Neighborhoods
+                </span>
+            </div>                         
+        	<div class="patternBlock">
+				<img class="patternImage" src="images/Bookstore.jpg" />
+                <span class="patternName">
+                	Corner Store
+                </span>
+            </div>             
+        </div>
+    </div>
+    
+
+</div>
+</body>
+</html>

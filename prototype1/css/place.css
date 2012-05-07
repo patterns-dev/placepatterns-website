@@ -1,0 +1,74 @@
+body {
+	background-color: #DD7875;
+	font-family: 'Simonetta', cursive;
+}
+
+.container {
+	background-color: #fff;
+	margin-top:20px;
+	padding-top:15px;
+}
+
+#sitename h1 {
+	font-size:5.5em;
+	margin-bottom: 5px;
+}
+#sitename h1 a {
+	text-decoration: none;
+}
+
+#sitename h2 {
+	font-size: 1.5em;
+	margin-left: 4px;
+}
+#search {
+	margin-top: 30px;
+}
+
+#main {
+	padding-top: 45px;
+	height: 900px;
+}
+.question {
+	font-size: 4em;
+	float: left;
+}
+.optionBox {	
+	display: inline-block;
+	float: left;
+}
+.option {
+	display: block; 
+	padding-left: 20px;
+	font-size: 2.5em;
+}
+.selectedOption {
+	padding-left: 0;
+	font-size: 4em;
+}
+.patternBlock {
+	display: none;
+	float: left;
+	width: 250px;
+	padding: 10px;
+	margin: 10px;
+}
+.patternImage {
+	width: 230px;
+}
+.patternName {
+	font-size: 1.8em;
+}
+
+p.projectDescription {
+	font-size: 1.7em;
+}
+
+.headerImg {
+	height: 165px;
+}
+.leaderImg {
+	width: 300px;
+	float: left;
+	margin-right: 20px;
+}
