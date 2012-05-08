@@ -29,7 +29,7 @@ function types_register() {
 		'capability_type' => 'post',
 		'hierarchical' => false,
 		'menu_position' => null,
-		'supports' => array('title','editor','thumbnail')
+		'supports' => array('title','editor','author','thumbnail','comments')
 	  ); 
  
 	register_post_type( 'pattern' , $pat_args );
@@ -60,7 +60,7 @@ function types_register() {
 		'capability_type' => 'post',
 		'hierarchical' => false,
 		'menu_position' => null,
-		'supports' => array('title','editor','thumbnail')
+		'supports' => array('title','editor','author','thumbnail','comments')
 	  ); 
  
 	register_post_type( 'place' , $place_args );		
