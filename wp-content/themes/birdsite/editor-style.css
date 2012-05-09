@@ -1,0 +1,262 @@
+/*
+Theme Name: BirdSITE
+*/
+/*
+Used to style the TinyMCE editor.
+*/
+html .mceContentBody {
+	max-width:610px;
+	}
+
+* {
+	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	line-height: 1.6;
+	color: #555;
+	}
+
+body, input, textarea {
+	}
+
+a {
+	text-decoration:none !important;
+	color:#06C !important;
+	}
+
+hr {
+	background-color: #E7E7E7;
+	border:0;
+	height: 1px;
+	margin-bottom: 1em;
+	clear:both;
+	}
+
+p {
+  text-align: left;
+	}
+
+p a {
+	color:#333 !important;
+	text-decoration: underline !important;
+	}
+
+h1 {
+	font-size: 130%;
+	font-weight: normal;
+	margin: 10px 0 30px;
+	padding: 0;
+	line-height: 1.5;
+	}
+
+h2 {
+	font-size: 120%;
+	font-weight: bold;
+	margin: 0 0 0.5em 0;
+	}
+
+h3 {
+	font-size: 120%;
+	margin: 0 0 0.5em 0;
+	}
+
+h4 {
+	font-size: 110%;
+	margin: 0 0 0.5em 0;
+	}
+
+h5 {
+	font-size: 100%;
+	margin: 0 0 0.5em 0;
+	}
+
+h6 {
+	font-size: 100%;
+	margin: 0 0 0.5em 0;
+	}
+
+blockquote {
+	margin-left: 1em;
+	padding-left: 1em;
+	border-left: 2px solid #DDD;
+	}
+
+pre {
+	border: dashed 1px #CCC;
+	padding: 10px;
+	}
+
+ul {
+	margin: 0 0 0 1em;
+	padding: 0 0 0 1em;
+	list-style: disc;
+	}
+
+ul ul {
+	list-style: circle;
+	}
+
+ul ul ul {
+	list-style: square;
+	}
+
+ul ul ul ul {
+	list-style: disk;
+	}
+
+ol {
+	list-style: decimal;
+	}
+
+ol ol {
+	list-style:upper-alpha;
+	}
+
+ol ol ol {
+	list-style:lower-roman;
+	}
+
+ol ol ol ol {
+	list-style:lower-alpha;
+	}
+
+dl {
+	margin:0 0 1em 0;
+	}
+
+dt {
+	font-weight: bold;
+	}
+
+dd {
+	margin: 0 0 1em 0;
+	padding: 0;
+}
+
+ strong {
+	font-weight: bold;
+}
+
+em,
+i,
+q {
+	font-style: italic;
+	}
+
+cite {
+	border-bottom: dashed 1px #CCC;
+	font-style: italic;
+	}
+
+big {
+	font-size: 130%;
+	}
+
+ins {
+	background: #ffc;
+	border: none;
+	color: #555;
+	}
+
+abbr {
+	text-transform: lowercase;
+	border-bottom: 1px dotted #666;
+	cursor: help;
+	}
+
+acronym {
+	text-transform: uppercase;
+	border-bottom: 1px dotted #666;
+	cursor: help;
+	}
+
+pre, code, samp, kbd, var{
+	font:100% mono-space,monospace;
+	}
+
+del {
+	color: #C00;
+	}
+
+table {
+	text-align: left;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+table caption {
+	font-weight: bold;
+	color: #333;
+	font-style: italic;
+	text-align: left;
+	}
+
+table th {
+	border-bottom: solid 1px #CCC !important;
+	font-weight: bold;
+}
+
+table td {
+	border-bottom: solid 1px #CCC !important;
+}
+
+img {
+	margin: 0;
+	max-width: 610px;
+}
+
+.alignleft,
+img.alignleft {
+	display: inline;
+	float: left;
+	margin-right: 24px;
+	margin-top: 4px;
+}
+
+.alignright,
+img.alignright {
+	display: inline;
+	float: right;
+	margin-left: 24px;
+	margin-top: 4px;
+}
+
+.aligncenter,
+img.aligncenter {
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+img.alignleft,
+img.alignright,
+img.aligncenter {
+	margin-bottom: 12px;
+}
+
+.wp-caption {
+	border: none;
+	background: #f1f1f1;
+	color: #888;
+	font-size: 12px;
+	line-height: 18px;
+	text-align: center;
+	margin-bottom: 20px;
+	padding: 4px;
+	-moz-border-radius: 0;
+	-khtml-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+}
+
+.wp-caption img {
+	margin: 5px;
+}
+
+.wp-caption p.wp-caption-text {
+	margin: 0 0 4px;
+}
+
+.wp-smiley {
+	margin:0;
+}
