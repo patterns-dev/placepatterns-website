@@ -2,6 +2,33 @@
 add_action('init', 'types_register');
 add_action( 'wp_loaded', 'connections_register' );
 add_filter( 'pre_get_posts', 'my_get_posts' );
+add_action('init', 'menus_register');
+add_action('init', 'taxonomies_register');
+
+function taxonomies_register() {
+	
+	register_taxonomy('scale','pattern',
+		array(
+			'label' => __('Scale'),
+			'hierarchical' => true,
+			'query_var' => true,
+			'capabilities' => array(
+				'manage_terms' => 'manage_categories',
+			        'edit_terms' => 'manage_categories',
+			        'delete_terms' => 'manage_categories',
+			        'assign_terms' => 'edit_posts'
+			)
+		)
+	);
+}
+
+function menus_register() {
+   if ( function_exists( 'register_nav_menus' ) )
+        register_nav_menus(array(
+                'user' => __('Logged In'),
+                'visitor' => __('Logged Out')
+        ));
+}
 
 function my_get_posts( $query ) {
 	if ( is_home()  )
