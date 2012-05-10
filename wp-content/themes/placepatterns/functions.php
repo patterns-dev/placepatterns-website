@@ -4,6 +4,20 @@ add_action( 'wp_loaded', 'connections_register' );
 add_filter( 'pre_get_posts', 'my_get_posts' );
 add_action('init', 'menus_register');
 add_action('init', 'taxonomies_register');
+add_action('wp_loaded', 'add_widgets');
+
+function add_widgets() {
+	if ( function_exists('register_sidebar') ){
+ 	   register_sidebar(array(
+        	'name' => 'my_filter_list',
+        	'before_widget' => '<div id="filter-list">',
+        	'after_widget' => '</div>',
+        	'before_title' => '',
+        	'after_title' => '',
+	));
+	}
+
+}
 
 function taxonomies_register() {
 	
@@ -20,6 +34,7 @@ function taxonomies_register() {
 			)
 		)
 	);
+	register_taxonomy_for_object_type('scale','place');
 }
 
 function menus_register() {

@@ -917,3 +917,19 @@ i {
 	visibility: hidden;
 	}
 
+/*** Place Pattern Additions ***/
+/* Hack the scale box */
+#filter-list {
+	left: -120px;
+    position: absolute;
+}
+
+body #wrapper #header {
+    height: 100px;
+}
+
+#header ul {
+position: relative;
+}
+
+.menu-header { float: right; }
