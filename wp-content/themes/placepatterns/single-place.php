@@ -17,11 +17,16 @@
 				if ( $connected->have_posts() ) : ?>
 				
 				<h3>Patterns in this place:</h3>
+				<div id="thumbnail">
 				<ul>
 				<?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
-					<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+				<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+					<?php birdsite_the_thumbnail(); ?>
+					<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+				</li>
 				<?php endwhile; ?>
 				</ul>
+				</div>
 				
 				<?php // Prevent weirdness 
 				wp_reset_postdata(); endif; ?>
