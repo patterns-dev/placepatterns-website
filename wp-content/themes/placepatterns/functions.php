@@ -47,7 +47,7 @@ function menus_register() {
 }
 
 function my_get_posts( $query ) {
-	if ( is_home()  )
+	if ( is_home() || is_archive() )
 		$query->set( 'post_type', array( 'post', 'pattern', 'place') );
 
 	return $query;
