@@ -35,6 +35,7 @@ function taxonomies_register() {
 		)
 	);
 	register_taxonomy_for_object_type('scale','place');
+	register_taxonomy_for_object_type('post_tag', 'pattern');
 }
 
 function menus_register() {
