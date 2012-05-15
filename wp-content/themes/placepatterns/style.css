@@ -918,11 +918,6 @@ i {
 	}
 
 /*** Place Pattern Additions ***/
-/* Hack the scale box */
-#filter-list {
-	left: -120px;
-    position: absolute;
-}
 
 body #wrapper #header {
     height: 100px;
@@ -933,3 +928,12 @@ position: relative;
 }
 
 .menu-header { float: right; }
+
+#left-sidebar {
+    left: -220px;
+    position: absolute;
+}
+#left-sidebar #filter-list {
+	width: 218px;
+	margin: 20px 0 0;
+}
