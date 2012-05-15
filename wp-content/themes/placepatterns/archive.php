@@ -1,7 +1,9 @@
 <?php get_header(); ?>
 
+<div id="left-sidebar">
 <?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('my_filter_list') ) : ?>
 <?php endif; ?>
+</div>
 
 <div id="content">
   
