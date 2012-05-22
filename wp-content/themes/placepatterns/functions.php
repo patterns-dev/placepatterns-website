@@ -6,15 +6,21 @@ add_action('init', 'menus_register');
 add_action('init', 'taxonomies_register');
 add_action('wp_loaded', 'add_widgets');
 
+//Custom field for google map
+if (function_exists('register_field') {
+    register_field('Location_field', dirname(__FILE__) . '/custom-fields/location.php');
+}
+
 function add_widgets() {
 	if ( function_exists('register_sidebar') ){
+ 	   //Filter sidebar - for index and archive pages
  	   register_sidebar(array(
         	'name' => 'my_filter_list',
         	'before_widget' => '<div id="filter-list">',
         	'after_widget' => '</div>',
         	'before_title' => '',
         	'after_title' => '',
-	));
+		));
 	}
 
 }
