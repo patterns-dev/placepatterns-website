@@ -49,7 +49,7 @@ class P2P_Box {
 			'title' => new $title_class( $this->labels->singular_name ),
 		);
 
-		foreach ( $this->args->fields as $key => $data ) {
+		foreach ( $this->ctype->fields as $key => $data ) {
 			$this->columns[ 'meta-' . $key ] = new P2P_Field_Generic( $key, $data );
 		}
 
@@ -90,7 +90,7 @@ class P2P_Box {
 	protected function render_data_attributes() {
 		$data_attr = array(
 			'p2p_type' => $this->ctype->name,
-			'prevent_duplicates' => $this->ctype->prevent_duplicates,
+			'duplicate_connections' => $this->ctype->duplicate_connections,
 			'cardinality' => $this->ctype->get_opposite( 'cardinality' ),
 			'direction' => $this->ctype->get_direction()
 		);
@@ -239,7 +239,9 @@ class P2P_Box {
 			'post_type' => $this->ctype->get_opposite( 'side' )->post_type[0]
 		);
 
-		$args = apply_filters( 'p2p_new_post_args', $args, $this->ctype );
+		$from = absint( $_POST['from'] );
+
+		$args = apply_filters( 'p2p_new_post_args', $args, $this->ctype, $from );
 
 		$this->safe_connect( wp_insert_post( $args ) );
 	}
@@ -322,7 +324,7 @@ class P2P_Box {
 	public function check_capability() {
 		$show = $this->ctype->get_opposite( 'side' )->check_capability();
 
-		return apply_filters( 'p2p_admin_box_show', $show, $GLOBALS['post'], $this->ctype );
+		return apply_filters( 'p2p_admin_box_show', $show, $this->ctype, $GLOBALS['post'] );
 	}
 }
 

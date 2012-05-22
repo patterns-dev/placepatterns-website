@@ -171,7 +171,7 @@ class P2P_Directed_Connection_Type {
 			) ) );
 		}
 
-		if ( $this->prevent_duplicates ) {
+		if ( !$this->duplicate_connections ) {
 			_p2p_append( $to_exclude, $this->get_connections( array(
 				'from' => $item_id,
 				'fields' => 'object_id'
@@ -202,7 +202,7 @@ class P2P_Directed_Connection_Type {
 		if ( !$this->self_connections && $from == $to )
 			return new WP_Error( 'self_connection', 'Connection between an element and itself is not allowed.' );
 
-		if ( $this->prevent_duplicates && $this->get_p2p_id( $from, $to ) )
+		if ( !$this->duplicate_connections && $this->get_p2p_id( $from, $to ) )
 			return new WP_Error( 'duplicate_connection', 'Duplicate connections are not allowed.' );
 
 		if ( 'one' == $this->get_opposite( 'cardinality' ) && $this->connection_exists( compact( 'from' ) ) )
@@ -211,11 +211,31 @@ class P2P_Directed_Connection_Type {
 		if ( 'one' == $this->get_current( 'cardinality' ) && $this->connection_exists( compact( 'to' ) ) )
 			return new WP_Error( 'cardinality_current', 'Cardinality problem.' );
 
-		return $this->create_connection( array(
+		$p2p_id = $this->create_connection( array(
 			'from' => $from,
 			'to' => $to,
 			'meta' => array_merge( $meta, $this->data )
 		) );
+
+		// Store additional default values
+		foreach ( $this->fields as $key => $args ) {
+			// (array) null == array()
+			foreach ( (array) $this->get_default( $args, $p2p_id ) as $default_value ) {
+				p2p_add_meta( $p2p_id, $key, $default_value );
+			}
+		}
+
+		return $p2p_id;
+	}
+
+	protected function get_default( $args, $p2p_id ) {
+		if ( isset( $args['default_cb'] ) )
+			return call_user_func( $args['default_cb'], p2p_get_connection( $p2p_id ) );
+
+		if ( !isset( $args['default'] ) )
+			return null;
+
+		return $args['default'];
 	}
 
 	/**

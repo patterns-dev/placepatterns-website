@@ -23,7 +23,7 @@ class P2P_Box_Factory {
 			$box_args = array();
 		}
 
-		foreach ( array( 'fields', 'can_create_post' ) as $key ) {
+		foreach ( array( 'can_create_post' ) as $key ) {
 			if ( isset( $args[ $key ] ) ) {
 				$box_args[ $key ] = _p2p_pluck( $args, $key );
 			}
@@ -41,22 +41,11 @@ class P2P_Box_Factory {
 		$box_args = (object) wp_parse_args( $box_args, array(
 			'show' => 'any',
 			'context' => 'side',
-			'fields' => array(),
 			'can_create_post' => true
 		) );
 
 		if ( !$box_args->show )
 			return false;
-
-		foreach ( $box_args->fields as &$field_args ) {
-			if ( !is_array( $field_args ) )
-				$field_args = array( 'title' => $field_args );
-
-			$field_args['type'] = _p2p_get_field_type( $field_args );
-
-			if ( 'checkbox' == $field_args['type'] && !isset( $field_args['values'] ) )
-				$field_args['values'] = array( true => ' ' );
-		}
 
 		self::$box_args[$p2p_type] = $box_args;
 
@@ -122,16 +111,20 @@ class P2P_Box_Factory {
 		if ( 'revision' == $post->post_type || defined( 'DOING_AJAX' ) )
 			return;
 
-		// Custom fields
-		if ( isset( $_POST['p2p_meta'] ) ) {
-			foreach ( $_POST['p2p_meta'] as $p2p_id => $data ) {
+		if ( isset( $_POST['p2p_connections'] ) ) {
+			// Loop through the hidden fields instead of through $_POST['p2p_meta'] because empty checkboxes send no data.
+			foreach ( $_POST['p2p_connections'] as $p2p_id ) {
+				$data = scbForms::get_value( array( 'p2p_meta', $p2p_id ), $_POST, array() );
+
 				$connection = p2p_get_connection( $p2p_id );
 
-				$fields = self::$box_args[$connection->p2p_type]->fields;
+				$fields = p2p_type( $connection->p2p_type )->fields;
 
 				foreach ( $fields as $key => &$field ) {
 					$field['name'] = $key;
 				}
+
+				$data = scbForms::validate_post_data( $fields, $data );
 
 				scbForms::update_meta( $fields, $data, $p2p_id, 'p2p' );
 			}

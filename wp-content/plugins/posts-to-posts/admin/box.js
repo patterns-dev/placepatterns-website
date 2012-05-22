@@ -25,7 +25,7 @@
       jQuery('.p2p-search input[placeholder]').each(setVal).focus(clearVal).blur(setVal);
     }
     return jQuery('.p2p-box').each(function() {
-      var $connections, $createButton, $createInput, $metabox, $searchInput, $spinner, $viewAll, PostsTab, ajax_request, append_connection, clear_connections, create_connection, delete_connection, maybe_hide_table, refresh_candidates, row_ajax_request, searchTab, switch_to_tab;
+      var $connections, $createButton, $createInput, $metabox, $searchInput, $spinner, $viewAll, PostsTab, ajax_request, append_connection, clear_connections, create_connection, delete_connection, refresh_candidates, remove_row, row_ajax_request, searchTab, switch_to_tab;
       $metabox = jQuery(this);
       $connections = $metabox.find('.p2p-connections');
       $spinner = jQuery('<img>', {
@@ -128,7 +128,10 @@
         $td.html($spinner.show());
         return ajax_request(data, callback);
       };
-      maybe_hide_table = function($table) {
+      remove_row = function($td) {
+        var $table;
+        $table = $td.closest('table');
+        $td.closest('tr').remove();
         if (!$table.find('tbody tr').length) {
           return $table.hide();
         }
@@ -168,11 +171,10 @@
         $td = $self.closest('td');
         data = {
           subaction: 'disconnect',
-          p2p_id: $self.data('p2p_id')
+          p2p_id: $self.closest('td').find('input').val()
         };
         row_ajax_request($td, data, function(response) {
-          $td.closest('tr').remove();
-          maybe_hide_table($connections);
+          remove_row($td);
           return refresh_candidates(response);
         });
         return false;
@@ -188,11 +190,10 @@
         };
         row_ajax_request($td, data, function(response) {
           append_connection(response);
-          if ($metabox.data('prevent_duplicates')) {
-            $td.closest('tr').remove();
-            return maybe_hide_table($td.closest('table'));
-          } else {
+          if ($metabox.data('duplicate_connections')) {
             return $td.html($self);
+          } else {
+            return remove_row($td);
           }
         });
         return false;
