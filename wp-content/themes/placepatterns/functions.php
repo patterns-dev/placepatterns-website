@@ -7,7 +7,7 @@ add_action('init', 'taxonomies_register');
 add_action('wp_loaded', 'add_widgets');
 
 //Custom field for google map
-if (function_exists('register_field') {
+if (function_exists('register_field')) {
     register_field('Location_field', dirname(__FILE__) . '/custom-fields/location.php');
 }
 

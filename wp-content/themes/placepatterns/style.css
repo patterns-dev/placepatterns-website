@@ -944,3 +944,11 @@ position: relative;
 #title-box {
 	padding: 31px 0 0 220px;
 }
+
+.three-diamond {
+	display: block;
+	width: 150px;
+	height: 42px;
+	margin: 0 auto;
+	border: none;
+}

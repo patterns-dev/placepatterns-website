@@ -8,7 +8,31 @@
 
 		<h1><?php the_title(); ?></h1>
 
-		<?php the_content(); ?>
+		<?php // the_content(); ?>
+
+		<?php if(get_field('context')): ?>
+			<?php echo get_field('context'); ?>
+		<?php endif; ?>
+		
+		<img class="three-diamond" src="<?php bloginfo('stylesheet_directory'); ?>/images/ThreeDiamondCircles.png" />		
+		
+		<?php if(get_field('conflict')): ?>
+			<?php echo get_field('conflict'); ?>
+		<?php endif; ?>
+		
+		<?php if(get_field('resolution')): ?>
+			<?php echo get_field('resolution'); ?>
+		<?php endif; ?>
+		
+		<?php if(get_field('discussion')): ?>
+			<?php echo get_field('discussion'); ?>
+		<?php endif; ?>
+		
+		
+		<?php if(get_field('downlinks')): ?>
+			<img class="three-diamond" src="<?php bloginfo('stylesheet_directory'); ?>/images/ThreeDiamondCircles.png" />
+			<?php echo get_field('downlinks'); ?>
+		<?php endif; ?>
 
 				<?php
 				// Find connected pages
@@ -54,7 +78,7 @@
 			</div><!-- #author-description -->
 		</div><!-- #entry-author-info -->
 		<?php endif; ?>
-		
+		 
 
 		<?php the_tags('<br /> Tags: ', ', ', ''); ?>
 		<?php the_terms(0, 'scale', '<br /> Scale: ', ', ', ''); ?>
