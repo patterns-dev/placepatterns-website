@@ -32,18 +32,35 @@
 				<?php // Prevent weirdness 
 				wp_reset_postdata(); endif; ?>
 
-		<?php wp_link_pages( array( 'before' => '<div class="page-link">' . __( 'Pages:', 'birdsite' ), 'after' => '</div>' ) ); ?>
-
-		<div class="posttag">
-			<div><?php the_date(get_option('date_format')); ?> <?php the_author(); ?> <?php edit_post_link( __( 'Edit', 'birdsite' ), ' ' ); ?></div>
-			<?php echo __('Posted in:', 'birdsite'); the_category(' , ') ?>
-			<?php the_tags('<br />' .__('Tags', 'birdsite') .': ', ' , ', ''); ?>
-		</div>
-
 	</div>
 
 	<?php comments_template(); ?>
 
+	<div id="right-sidebar">
+	
+		<?php if ( get_the_author_meta( 'description' ) ) : // If a user has filled out their description ?>
+		<div id="author-info">
+			<div id="author-avatar">
+				<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'twentyeleven_author_bio_avatar_size', 68 ) ); ?>
+			</div><!-- #author-avatar -->
+			<div id="author-description">
+				<h2>From: <?php echo get_the_author(); ?></h2>
+				<?php the_author_meta( 'description' ); ?>
+				<div id="author-link">
+					<a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
+						<?php printf( __( 'View all work from %s <span class="meta-nav">&rarr;</span>', 'twentyeleven' ), get_the_author() ); ?>
+					</a>
+				</div><!-- #author-link	-->
+			</div><!-- #author-description -->
+		</div><!-- #entry-author-info -->
+		<?php endif; ?>
+		
+
+		<?php the_tags('<br /> Tags: ', ', ', ''); ?>
+		<?php the_terms(0, 'scale', '<br /> Scale: ', ', ', ''); ?>
+	</div>
+	
+	
 	<?php endwhile; else: ?>
 
 		<p><?php printf(__('Sorry, no posts matched your criteria.', 'birdsite'), wp_specialchars($s) ); ?></p>

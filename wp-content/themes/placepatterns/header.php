@@ -16,13 +16,14 @@
 <div id="wrapper">
 
 	<div id="header">
-
-		<?php $heading_tag = ( is_home() || is_front_page() ) ? 'h1' : 'div'; ?>
-		<<?php echo $heading_tag; ?> id="site-title">
-			<a href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
-		</<?php echo $heading_tag; ?>>
-		<div id="tagline"><?php bloginfo( 'description' ); ?></div>
-
+		<div id="title-box">
+			<?php $heading_tag = ( is_home() || is_front_page() ) ? 'h1' : 'div'; ?>
+			<<?php echo $heading_tag; ?> id="site-title">
+				<a href="<?php echo home_url( '/' ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
+			</<?php echo $heading_tag; ?>>
+			<div id="tagline"><?php bloginfo( 'description' ); ?></div>
+		</div>
+		
 		<?php if ( is_user_logged_in() ) :
 			wp_nav_menu( array( 'container_class' => 'menu-header', 'theme_location' => 'user' ) ); 
 		else : 

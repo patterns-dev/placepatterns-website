@@ -130,27 +130,20 @@ body{
 #header h1,
 #header #site-title {
 	font-size: 200%;
-	position: absolute;
-	top: 10px;
-	left: 0;
 	font-weight: bold;
-	margin: 0;
 	padding: 0;
 	line-height: 1;
+	font-family: Trebuchet MS;
+	margin-bottom: 0;
 	}
 
 #header #tagline {
-	position: absolute;
-	top: 3em;
-	left: 0;
+
 	}
 
 #header ul {
 	list-style: none;
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	margin: 0;
+
 	}
 
 #header ul li {
@@ -246,7 +239,7 @@ body{
 }
 
 #content h1 {
-	font-size: 130%;
+	font-size: 140%;
 	font-weight: normal;
 	margin: 10px 0 30px;
 	padding: 0;
@@ -936,4 +929,18 @@ position: relative;
 #left-sidebar #filter-list {
 	width: 218px;
 	margin: 20px 0 0;
+}
+
+#right-sidebar {
+    left: 680px;
+    position: absolute;
+    top: 135px;
+    width: 220px;
+}
+
+#right-sidebar #author-avatar img{
+	display: inline;
+}
+#title-box {
+	padding: 31px 0 0 220px;
 }
