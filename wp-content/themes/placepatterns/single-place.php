@@ -54,6 +54,43 @@
 		</div><!-- #entry-author-info -->
 		<?php endif; ?>
 		
+		<?php if(get_field('location')): ?>
+			<div id="map" style="width: 220px; height: 154px; margin: 15px 0;"></div>
+	
+			<?php
+				$location = get_field('location');
+				$temp = explode(';', $location);
+				$lat = (float) $temp[0];
+				$lng = (float) $temp[1];
+			?>
+			<script src='http://maps.googleapis.com/maps/api/js?sensor=false' type='text/javascript'></script>
+			<script type="text/javascript">
+			//<![CDATA[
+			function loadMap() {
+				var lat = <?php echo $lat; ?>;
+				var lng = <?php echo $lng; ?>;
+				// coordinates to latLng
+				var latlng = new google.maps.LatLng(lat, lng);
+				// map Options
+				var myOptions = {
+					zoom: 12,
+					center: latlng,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				//draw a map
+				var map = new google.maps.Map(document.getElementById("map"), myOptions);
+				var marker = new google.maps.Marker({
+					position: map.getCenter(),
+					map: map
+				});
+			}
+			// call the function
+			loadMap();
+			//]]>
+			</script>
+		
+		<?php endif; ?>
+		
 
 		<?php the_tags('<br /> Tags: ', ', ', ''); ?>
 		<?php the_terms(0, 'scale', '<br /> Scale: ', ', ', ''); ?>
