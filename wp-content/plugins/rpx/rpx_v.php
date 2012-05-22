@@ -1552,7 +1552,8 @@ function rpx_avatar_filter($avatar){
   if (in_the_loop() != false){
     $zero = 0;
     $comment = get_comment($zero);
-    if (!is_wp_error($comment->user_id)){
+    
+    if ($comment && !is_wp_error($comment->user_id)){ //LNI: Inserted test for $comment
       $user = get_userdata($comment->user_id);
       if (!is_wp_error($user)){
         if (isset($user->rpx_photo)){
