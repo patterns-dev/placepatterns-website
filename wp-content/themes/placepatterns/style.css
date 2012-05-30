@@ -945,10 +945,14 @@ position: relative;
 	padding: 31px 0 0 220px;
 }
 
-.three-diamond {
+.single #content .three-diamond { /* need the specificity to override '.single #content img' rule */
 	display: block;
 	width: 150px;
 	height: 42px;
 	margin: 0 auto;
 	border: none;
+}
+
+#content h1 {
+	text-align: center;
 }

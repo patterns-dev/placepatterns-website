@@ -5,6 +5,10 @@
 	<?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 
 	<div class="post">
+	
+		<?php if ( has_post_thumbnail() ): // check if the post has a Post Thumbnail assigned to it.
+		  	the_post_thumbnail('medium');
+		endif; ?>
 
 		<h1><?php the_title(); ?></h1>
 
