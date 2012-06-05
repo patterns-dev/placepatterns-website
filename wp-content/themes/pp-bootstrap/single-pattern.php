@@ -17,27 +17,45 @@
 					<span><?php the_tags('<br /> Tags: ', ', ', ''); ?></span>
 			
 					<?php if(get_field('context')): ?>
+						<span id="context">
 						<?php echo get_field('context'); ?>
+						</span>
 						<img class="three-diamond" src="<?php bloginfo('stylesheet_directory'); ?>/images/ThreeDiamondCircles.png" />				
 					<?php endif; ?>
 					
 
 					<?php if(get_field('conflict')): ?>
+						<span id="conflict">
 						<?php echo get_field('conflict'); ?>
+						</span>
 					<?php endif; ?>
 					
+
 					<?php if(get_field('resolution')): ?>
+						<span id="resolution">
+						<p>Therefore:</p>
 						<?php echo get_field('resolution'); ?>
+						</span>
 					<?php endif; ?>
-					
+
 					<?php if(get_field('discussion')): ?>
+						<p><button class="btn btn-action" data-toggle="collapse" data-target="#discussion">
+					  		Discussion
+						</button></p>
+						<div id="discussion" class="collapse">
 						<?php echo get_field('discussion'); ?>
+						</div>
+						<script>
+							$(".collapse").collapse()
+						</script>
 					<?php endif; ?>
 					
 					
 					<?php if(get_field('downlinks')): ?>
 						<img class="three-diamond" src="<?php bloginfo('stylesheet_directory'); ?>/images/ThreeDiamondCircles.png" />
+						<span id="downlinks">
 						<?php echo get_field('downlinks'); ?>
+						</span>
 					<?php endif; ?>
 
 				</div> <!-- post -->

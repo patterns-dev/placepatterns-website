@@ -305,13 +305,14 @@ a.comment-reply-link{
 	margin-left: 0;
 }
 
+/*
 img.avatar{
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #dedede;
 	border-right: 1px solid #dedede;
-	border-left: 1px solid #ddd;
-	
+	border-left: 1px solid #ddd;	
 }
+*/
 
 ol.commentlist li{
 	padding-right: 10px;
@@ -700,49 +701,6 @@ body {
 	font-style: italic;
 	}
 
-
-
-/*** Place Pattern Additions 
-****************************
-
-body #wrapper #header {
-    height: 100px;
+#conflict, #resolution {
+	font-weight: bold;
 }
-
-#header ul {
-position: relative;
-}
-
-.menu-header { float: right; }
-
-#left-sidebar {
-    left: -220px;
-    position: absolute;
-}
-#left-sidebar .filter-list {
-	width: 218px;
-	margin: 20px 0 0;
-}
-
-#right-sidebar {
-    left: 680px;
-    position: absolute;
-    top: 135px;
-    width: 220px;
-}
-
-#right-sidebar #author-avatar img{
-	display: inline;
-}
-#title-box {
-	padding: 31px 0 0 220px;
-}
-
-#content h1 {
-	text-align: center;
-}
-
-********/
-
-
-

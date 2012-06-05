@@ -7,6 +7,11 @@ add_action('init', 'taxonomies_register');
 add_action('wp_loaded', 'add_widgets');
 add_action('after_setup_theme', 'fields_register');
 add_filter( 'show_admin_bar', '__return_false' ); //Nuke the admin bar
+add_action('login_head', 'my_login_css');
+
+function my_login_css() {
+  echo '<link rel="stylesheet" type="text/css" href="' . get_stylesheet_directory_uri() . '/login-style.css' . '">';
+}
 
 function pp_thumbnail() {
 
