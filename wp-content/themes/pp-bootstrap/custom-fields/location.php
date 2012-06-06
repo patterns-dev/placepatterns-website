@@ -1,14 +1,10 @@
 <?php
 
 /*
- *	Advanced Custom Fields - New field template
+ *	Advanced Custom Fields - Google maps marker field
  *	
- *	Create your field's functionality below and use the function:
- *	register_field($class_name, $file_path) to include the field
- *	in the acf plugin.
  *
- *	Documentation: 
- *
+ * 	@author Elliot Condon, Changes made by Evalds Urtans (www.asketic.com)
  */
  
  
@@ -37,6 +33,13 @@ class Location_field extends acf_Field
 		
    	}
 
+	function validate_options(&$field)
+	{
+		$field['api_key'] = isset($field['api_key']) ? $field['api_key'] : '';
+		$field['map_center'] = isset($field['map_center']) ? $field['map_center'] : '56.95458774719434;24.104830026626587';
+		$field['map_zoom'] = isset($field['map_zoom']) ? $field['map_zoom'] : '8';
+	}
+	
 	
 	/*--------------------------------------------------------------------------------------
 	*
@@ -55,7 +58,55 @@ class Location_field extends acf_Field
 	
 	function create_options($key, $field)
 	{
+		$this->validate_options($field);
 		
+		?>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e('API key','acf'); ?></label>
+				<p class="description"><?php _e("To have google map search by address function please get API Key from google API console",'acf'); ?></p></td>
+			</td>
+			<td>
+				<?php 
+				$this->parent->create_field(array(
+					'type'	=>	'text',
+					'name'	=>	'fields['.$key.'][api_key]',
+					'value'	=>	$field['api_key']					
+				));
+				?>
+			</td>
+		</tr>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e('Map center','acf'); ?></label>
+				<p class="description"><?php _e("Example: 56.95458774719434;24.104830026626587",'acf'); ?></p></td>
+			</td>
+			<td>
+				<?php 
+				$this->parent->create_field(array(
+					'type'	=>	'text',
+					'name'	=>	'fields['.$key.'][map_center]',
+					'value'	=>	$field['map_center']					
+				));
+				?>
+			</td>
+		</tr>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e('Map zoom','acf'); ?></label>
+				<p class="description"><?php _e("Example: 8",'acf'); ?></p></td>
+			</td>
+			<td>
+				<?php 
+				$this->parent->create_field(array(
+					'type'	=>	'text',
+					'name'	=>	'fields['.$key.'][map_zoom]',
+					'value'	=>	$field['map_zoom']
+				));
+				?>
+			</td>
+		</tr>
+		<?php
 	}
 	
 	
@@ -90,106 +141,209 @@ class Location_field extends acf_Field
 	
 	function create_field($field)
 	{
-		echo '<input type="text" value="' . $field['value'] . '" id="' . $field['name'] . '" class="' . $field['class'] . '" name="' . $field['name'] . '" />';
-		echo '<div id="map"></div>';
-	}
-	
-	
-	/*--------------------------------------------------------------------------------------
-	*
-	*	admin_head
-	*	- this function is called in the admin_head of the edit screen where your field
-	*	is created. Use this function to create css and javascript to assist your 
-	*	create_field() function.
-	*
-	*	@author Elliot Condon
-	*	@since 2.2.0
-	* 
-	*-------------------------------------------------------------------------------------*/
-	
-	function admin_head()
-	{
+		$this->validate_options($field);
+		
 		?>
 		<style type="text/css">
-			#map {width: 100%; height: 500px; margin-top: 10px;}
+			#map 
+			{
+				width: 100%; height: 500px; margin-top: 10px;
+			}
+			#map-find .imgedit-wait
+			{
+				background-position: 60px 10px;
+			}
 		</style>
-		    <script src='http://maps.googleapis.com/maps/api/js?sensor=false' type='text/javascript'></script>
-			<script type="text/javascript">
-				function load() {
-					var exists = 0, marker;
-					// get the lat and lng from our input field
-					var coords = jQuery('.location').val();
-					// if input field is empty, default coords
-					if (coords === '') {
-						lat = 45.77598686952638; 
-						lng = 15.985933542251587;
-					} else {
-						// split the coords by ;
-						temp = coords.split(';');
-						lat = parseFloat(temp[0]);
-						lng = parseFloat(temp[1]);
-						exists = 1;
-					}
-					// coordinates to latLng
-					var latlng = new google.maps.LatLng(lat, lng);
-					// map Options
-					var myOptions = {
-					  zoom: 8,
-					  center: latlng,
-					  mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-					//draw a map
-					var map = new google.maps.Map(document.getElementById("map"), myOptions);
+	    <script src='http://maps.googleapis.com/maps/api/js?sensor=false' type='text/javascript'></script>
+	    
+	    <?php
+	    $mapCenter = explode(';', $field['map_center']);
+	    
+	    $hasApiKey = false;
+	    if(strlen($field['api_key'])):
+			$hasApiKey = true;
+	    ?>
+	    	<script src="http://www.google.com/uds/api?file=uds.js&amp;v=1.0&amp;key=<?= $field['api_key']; ?>" type="text/javascript"></script>
+		<?php
+		endif;
+		?>
+	    
+		<script type="text/javascript">
+			function gMapLoad() {
+				var exists = 0, 
+					marker, 
+					zoom = 8;
 					
-					// if we had coords in input field, put a marker on that spot
-					if(exists == 1) {
+				var maxZoomService = null;
+				
+				<?php
+				if($hasApiKey):
+				?>
+					maxZoomService = new google.maps.MaxZoomService();
+				<?php
+				endif;
+				?>
+				
+				// get the lat and lng from our input field
+				var coords = jQuery('.location').val();
+				// if input field is empty, default coords
+				if (coords === '') {
+					lat = <?= $mapCenter[0]; ?>; 
+					lng = <?= $mapCenter[1]; ?>;
+					zoom = <?= $field['map_zoom']; ?>;
+				} else {
+					// split the coords by ;
+					temp = coords.split(';');
+					lat = parseFloat(temp[0]);
+					lng = parseFloat(temp[1]);					
+					exists = 1;
+				}
+				// coordinates to latLng
+				var latlng = new google.maps.LatLng(lat, lng);
+				// map Options
+				var myOptions = {
+				  zoom: zoom,
+				  center: latlng,
+				  mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				//draw a map
+				var map = new google.maps.Map(document.getElementById("map"), myOptions);
+				
+				if(exists && maxZoomService)
+				{
+					maxZoomService.getMaxZoomAtLatLng(latlng, function(event){
+						map.setZoom(event.zoom);	
+					});				
+				}
+				
+				// if we had coords in input field, put a marker on that spot
+				if(exists == 1) {
+					marker = new google.maps.Marker({
+						position: map.getCenter(),
+						map: map,
+						scrollwheel: false,
+						draggable: true
+					});
+				}
+				
+				// click event
+				google.maps.event.addListener(map, 'click', function(point) {
+					if (exists == 0) {
+						exists = 1;
+						// drawing the marker on the clicked spot
 						marker = new google.maps.Marker({
-							position: map.getCenter(),
+							position: point.latLng,
 							map: map,
 							draggable: true
-						});
+						});							
+					} else {
+						// only one marker on the map!
+						//alert('Marker already on the map! Drag it to desired location.');
+						marker.setPosition(point.latLng);
 					}
 					
-					// click event
-					google.maps.event.addListener(map, 'click', function(point) {
-						if (exists == 0) {
-							exists = 1;
-							// drawing the marker on the clicked spot
-							marker = new google.maps.Marker({
-								position: point.latLng,
-								map: map,
-								draggable: true
-							});
-							//put the coordinates to input field
-							jQuery('.location').val(marker.getPosition().lat() + ';' + marker.getPosition().lng());
-							// drag event for add screen
-							google.maps.event.addListener(marker, "dragend", function (mEvent) { 
-								jQuery('.location').val(mEvent.latLng.lat() + ';' + mEvent.latLng.lng());
-							});
-						} else {
-							// only one marker on the map!
-							alert('Marker already on the map! Drag it to desired location.');
-						}
+					//put the coordinates to input field
+					jQuery('.location').val(marker.getPosition().lat() + ';' + marker.getPosition().lng());
+					// drag event for add screen
+					google.maps.event.addListener(marker, "dragend", function (mEvent) { 
+						jQuery('.location').val(mEvent.latLng.lat() + ';' + mEvent.latLng.lng());
 					});
-					//dragend event for update screen
-					if(exists === 1) {
-						google.maps.event.addListener(marker, "dragend", function (mEvent) { 
-							jQuery('.location').val(mEvent.latLng.lat() + ';' + mEvent.latLng.lng());
-						});
-					}
+				});
+				//dragend event for update screen
+				if(exists === 1) {
+					google.maps.event.addListener(marker, "dragend", function (mEvent) { 
+						jQuery('.location').val(mEvent.latLng.lat() + ';' + mEvent.latLng.lng());
+					});
 				}
-
-			jQuery(document).ready(function(){
-				if (jQuery('.location').length > 0) {
-					load();
+				
+									
+				
+				jQuery('#map-location').change(function() {
+						var input = $(this);
+						if(input.val().indexOf(';'))
+						{
+							var arrPos = input.val().split(';');
+							var ll = new google.maps.LatLng(parseFloat(arrPos[0]),
+				                                            parseFloat(arrPos[1]));
+							map.setCenter(ll);
+							marker.setPosition(ll);	
+							
+							if(maxZoomService)
+							{
+								//Set max zoom										
+								maxZoomService.getMaxZoomAtLatLng(ll, function(event){
+									map.setZoom(event.zoom);	
+								});
+							}												 								
+						}
+				});
+				
+				if(maxZoomService)
+				{
+					//Address search
+					//Initialize the local searcher
+				    var gLocalSearch = new GlocalSearch();			
+				    var gLoader = jQuery('#map-find .imgedit-wait');	    
+				    
+				    function OnLocalSearch() {
+				    	  gLoader.hide();
+					      if (!gLocalSearch.results.length) return;
+					      
+					      // Move the map to the first result
+					      var first = gLocalSearch.results[0];					      
+					      map.setCenter(new google.maps.LatLng(parseFloat(first.lat),
+					                                            parseFloat(first.lng)));
+					      jQuery('#map-location').val(map.getCenter().lat() + ';' + map.getCenter().lng()).trigger('change');
+					      
+				    }
+				    gLocalSearch.setSearchCompleteCallback(null, OnLocalSearch);
+	
+					
+					jQuery('#map-find-button').click(function(){
+						var button = $(this);
+						gLoader.show();
+						
+						gLocalSearch.setCenterPoint(map.getCenter());
+	  					gLocalSearch.execute(jQuery('#map-find-value').val());      					
+					});
 				}
-			});
-			</script>
+				
+			}
 
+		jQuery(document).ready(function(){
+			if (jQuery('.location').length > 0) {
+				gMapLoad();
+			}
+		});
+		</script>
 		<?php
+		if($hasApiKey):
+		?>
+			<div id="map-find">
+				<div>
+					<label>Address search:</label>
+				</div>
+				<input type="text" id="map-find-value" value="" style="width: 350px;"/>
+	          	<input type="button" id="map-find-button" value="Search"/>
+	          	<div class="imgedit-wait"></div>
+			</div>
+		<?php
+		endif;
+		?>		
+		<div>
+			<label>Coordinates:</label>
+		</div>
+		<?php
+			echo '<input id="map-location" type="text" style="width: 350px;" value="' . $field['value'] . '" id="' . $field['name'] . '" class="' . $field['class'] . '" name="' . $field['name'] . '" />';
+		?>
+		<div id="map"></div>
+		<div>
+			* Use drag&drop on pin to make corrections
+		</div>
+		<?php		
 	}
 	
-	
+
 	/*--------------------------------------------------------------------------------------
 	*
 	*	admin_print_scripts / admin_print_styles

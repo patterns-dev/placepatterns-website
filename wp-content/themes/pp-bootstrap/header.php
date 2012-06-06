@@ -256,6 +256,15 @@
 									<ul class="nav pull-right">
 										<li><a href="/wp-login.php">Login</a></li>
 									</ul>
+								<?php else: 
+									global $current_user;
+									get_currentuserinfo();
+									
+									?>
+									<ul class="nav pull-right">
+									<li><a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><?php echo $current_user->display_name ?></a></li>
+									<li><a href="<?php echo wp_logout_url(get_permalink()); ?>" style="font-size: 0.7em;" title="<?php _e("Log out of this account","bonestheme"); ?>"><?php _e("Log out","bonestheme"); ?> &raquo;</a></li>
+									</ul>
 								<?php endif; ?>
 
 								<div class="nav-collapse">
