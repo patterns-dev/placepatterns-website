@@ -704,3 +704,14 @@ body {
 #conflict, #resolution {
 	font-weight: bold;
 }
+#conflict, #resolution, #context, #discussion
+{
+	text-align: left;
+}
+
+.navbar .brand {
+	font-size: 23px;
+	font-weight: normal;
+	padding: 10px 20px 11px 0;
+	margin-left: -124px;
+}

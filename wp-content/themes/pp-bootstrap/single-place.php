@@ -21,40 +21,32 @@
 			</div>
 		</div>
 
-		<div id="author" class="row">
-			<div class="authorbox span7 offset3">
-				<div class="row">
-									
-					<div class="span6">
-						<h3><a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
-								 <?php echo get_the_author(); ?>
-							</a>
-						</h3>
-						<?php if ( get_the_author_meta( 'description' ) ) : // If a user has filled out their description ?>
-							<div id="author-description">
-								<?php
-								$desc=nl2br (get_the_author_meta('description'));
-								echo $desc;
-								
-								//the_author_meta( 'description' ); ?>
-							</div><!-- #author-description -->
-						<?php endif; ?>
 			
-					</div>
-					<div class="span1">
-						<div id="author-avatar">
-							<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'twentyeleven_author_bio_avatar_size', 68 ) ); ?>
-						</div><!-- #author-avatar -->
-					</div>
-				</div>
-			</div> <!--authorbox-->		
-		</div>
+		<?php
+		// Find connected pages
+		$connected = new WP_Query( array('connected_type' => 'places_to_patterns','connected_items' => get_queried_object(),'nopaging' => true) );
+		
+		// Display connected pages
+		if ( $connected->have_posts() or get_field('location')) : ?>
+			<div id="related-places" class="row">
+				<div class="span8 offset2">
+				    
+				    <?php if ( $connected->have_posts()): ?>
+					<h3>Patterns in this Place:</h3>
+					<div id="thumbnail">
+						<ul>
+						<?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
+						<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+							<?php pp_thumbnail(); ?>
+							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+						</li>
+						<?php endwhile; 
+						// Prevent weirdness 
+						wp_reset_postdata(); 
+						?>
 
-		<div id="maprow" class="row">
-			<div class="span3 offset2">
-
-				<?php if(get_field('location')): ?>
-					<div id="map" style="width: 220px; height: 154px; margin: 15px 0;"></div>
+					<?php if(get_field('location')): ?>
+					<li style="width: auto; background: none;"><div id="map" style="width: 220px; height: 154px; margin: 15px 0;"></div></li>
 			
 					<?php
 						$location = get_field('location');
@@ -88,36 +80,49 @@
 					//]]>
 					</script>
 				
-				<?php endif; ?>
-				
-			</div>
-		</div>
-			
-		<?php
-		// Find connected pages
-		$connected = new WP_Query( array('connected_type' => 'places_to_patterns','connected_items' => get_queried_object(),'nopaging' => true) );
-		
-		// Display connected pages
-		if ( $connected->have_posts() ) : ?>
-			<div id="related-places" class="row">
-				<div class="span8 offset2">										
-					<h3>Patterns in this Place:</h3>
-					<div id="thumbnail">
-						<ul>
-						<?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
-						<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-							<?php pp_thumbnail(); ?>
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</li>
-						<?php endwhile; ?>
+				    <?php endif; ?>
+
+
+
+
 						</ul>
 					</div>
 					
-					<?php // Prevent weirdness 
-					wp_reset_postdata(); ?>				
+					<?php endif; ?>
+					
+					
 				</div>
 			</div>
 		<?php endif; ?>	
+
+		<div id="author" class="row">
+			<div class="authorbox span7 offset3">
+				<div class="row">
+									
+					<div class="span6">
+						<h3><a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>" rel="author">
+								 <?php echo get_the_author(); ?>
+							</a>
+						</h3>
+						<?php if ( get_the_author_meta( 'description' ) ) : // If a user has filled out their description ?>
+							<div id="author-description">
+								<?php
+								$desc=nl2br (get_the_author_meta('description'));
+								echo $desc;
+								
+								//the_author_meta( 'description' ); ?>
+							</div><!-- #author-description -->
+						<?php endif; ?>
+			
+					</div>
+					<div class="span1">
+						<div id="author-avatar">
+							<?php echo get_avatar( get_the_author_meta( 'user_email' ), apply_filters( 'twentyeleven_author_bio_avatar_size', 68 ) ); ?>
+						</div><!-- #author-avatar -->
+					</div>
+				</div>
+			</div> <!--authorbox-->		
+		</div>
 	
 	</div>
 

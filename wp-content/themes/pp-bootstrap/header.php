@@ -244,7 +244,10 @@
 					<div class="navbar-inner">
 						<div class="container nav-container">
 							<nav role="navigation">
-								<a class="brand" id="logo" title="<?php echo get_bloginfo('description'); ?>" href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a>
+								<a class="brand" id="logo" title="<?php echo get_bloginfo('description'); ?>" href="<?php echo home_url(); ?>">
+									<?php //bloginfo('name'); ?>
+									<img class="top-diamond" src="<?php echo get_stylesheet_directory_uri(); ?>/images/SingleDiamondCircle-57px.png" height="30" width="30"/>
+								</a>
 								
 								<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 							        <span class="icon-bar"></span>
@@ -252,24 +255,53 @@
 							        <span class="icon-bar"></span>
 								</a>
 								
+								<?php bones_main_nav(); // Adjust using Menus in Wordpress Admin ?>
+								
 								<?php if ( !is_user_logged_in() ) : ?>
-									<ul class="nav pull-right">
-										<li><a href="/wp-login.php">Login</a></li>
+									<ul class="nav pull-left">									  
+									  <li class="dropdown">
+										<a href="#"
+											  class="dropdown-toggle"
+											  data-toggle="dropdown">
+											  Participate
+											  <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+										  <li><a href="<?php echo wp_login_url( home_url() ); ?>">Register / Login</a></li>
+										</ul>
+									  </li>
 									</ul>
+									
+									<ul class="nav pull-right">
+										<li><a href="<?php echo wp_login_url( home_url() ); ?>">Login</a></li>
+									</ul>
+
 								<?php else: 
 									global $current_user;
 									get_currentuserinfo();
 									
 									?>
+									<ul class="nav pull-left">
+									  <li class="dropdown">
+										<a href="#"
+											  class="dropdown-toggle"
+											  data-toggle="dropdown">
+											  Participate
+											  <b class="caret"></b>
+										</a>
+										<ul class="dropdown-menu">
+										  <li><a href="/wp-admin/post-new.php?post_type=pattern">Contribute a Pattern</a></li>
+										  <li><a href="/wp-admin/post-new.php?post_type=place">Contribute a Place</a></li>
+										</ul>
+									  </li>
+									</ul>
 									<ul class="nav pull-right">
 									<li><a href="<?php echo get_option('siteurl'); ?>/wp-admin/profile.php"><?php echo $current_user->display_name ?></a></li>
-									<li><a href="<?php echo wp_logout_url(get_permalink()); ?>" style="font-size: 0.7em;" title="<?php _e("Log out of this account","bonestheme"); ?>"><?php _e("Log out","bonestheme"); ?> &raquo;</a></li>
+									<li><a href="<?php echo wp_logout_url( home_url() ); ?>" style="font-size: 0.7em;" title="<?php _e("Log out of this account","bonestheme"); ?>"><?php _e("Log out","bonestheme"); ?> &raquo;</a></li>
 									</ul>
 								<?php endif; ?>
 
-								<div class="nav-collapse">
-									<?php bones_main_nav(); // Adjust using Menus in Wordpress Admin ?>
-								</div>
+							
 								
 							</nav>
 							

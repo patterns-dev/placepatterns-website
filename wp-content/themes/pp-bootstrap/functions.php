@@ -8,6 +8,35 @@ add_action('wp_loaded', 'add_widgets');
 add_action('after_setup_theme', 'fields_register');
 add_filter( 'show_admin_bar', '__return_false' ); //Nuke the admin bar
 add_action('login_head', 'my_login_css');
+add_action('admin_menu', 'remove_menus', 102);
+
+
+function remove_menus()
+{
+global $submenu;
+
+	remove_menu_page( 'edit.php' ); // Posts
+	//remove_menu_page( 'upload.php' ); // Media
+	//remove_menu_page( 'link-manager.php' ); // Links
+	//remove_menu_page( 'edit-comments.php' ); // Comments
+	//remove_menu_page( 'edit.php?post_type=page' ); // Pages
+	//remove_menu_page( 'plugins.php' ); // Plugins
+	//remove_menu_page( 'themes.php' ); // Appearance
+	//remove_menu_page( 'users.php' ); // Users
+	//remove_menu_page( 'tools.php' ); // Tools
+	//remove_menu_page(‘options-general.php’); // Settings
+	
+	//remove_submenu_page ( 'index.php', 'update-core.php' );    //Dashboard->Updates
+	//remove_submenu_page ( 'themes.php', 'themes.php' ); // Appearance-->Themes
+	//remove_submenu_page ( 'themes.php', 'widgets.php' ); // Appearance-->Widgets
+	//remove_submenu_page ( 'themes.php', 'theme-editor.php' ); // Appearance-->Editor
+	//remove_submenu_page ( 'options-general.php', 'options-general.php' ); // Settings->General
+	//remove_submenu_page ( 'options-general.php', 'options-writing.php' ); // Settings->writing
+	//remove_submenu_page ( 'options-general.php', 'options-reading.php' ); // Settings->Reading
+	//remove_submenu_page ( 'options-general.php', 'options-discussion.php' ); // Settings->Discussion
+	//remove_submenu_page ( 'options-general.php', 'options-media.php' ); // Settings->Media
+	//remove_submenu_page ( 'options-general.php', 'options-privacy.php' ); // Settings->Privacy
+}
 
 function my_login_css() {
   echo '<link rel="stylesheet" type="text/css" href="' . get_stylesheet_directory_uri() . '/login-style.css' . '">';
@@ -78,7 +107,7 @@ function menus_register() {
 
 function my_get_posts( $query ) {
 	if ( is_home() || is_archive() )
-		$query->set( 'post_type', array( 'post', 'pattern', 'place') );
+		$query->set( 'post_type', array( 'nav_menu_item', 'pattern', 'place') );
 
 	return $query;
 } 
@@ -105,11 +134,11 @@ function types_register() {
 		'publicly_queryable' => true,
 		'show_ui' => true,
 		'query_var' => true,
-		'menu_icon' => get_stylesheet_directory_uri() . '/article16.png',
+		//'menu_icon' => get_stylesheet_directory_uri() . '/article16.png',
 		'rewrite' => true,
 		'capability_type' => 'post',
 		'hierarchical' => false,
-		'menu_position' => null,
+		'menu_position' => 2,
 		'supports' => array('title','editor','author','thumbnail','comments')
 	  ); 
  
@@ -136,11 +165,11 @@ function types_register() {
 		'publicly_queryable' => true,
 		'show_ui' => true,
 		'query_var' => true,
-		'menu_icon' => get_stylesheet_directory_uri() . '/article16.png',
+		//'menu_icon' => get_stylesheet_directory_uri() . '/article16.png',
 		'rewrite' => true,
 		'capability_type' => 'post',
 		'hierarchical' => false,
-		'menu_position' => null,
+		'menu_position' => 3,
 		'supports' => array('title','editor','author','thumbnail','comments')
 	  ); 
  
