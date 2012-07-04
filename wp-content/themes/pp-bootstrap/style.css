@@ -727,3 +727,12 @@ body {
 	padding: 10px 20px 11px 0;
 	margin-left: -124px;
 }
+
+.related-places-inside {
+	padding-top: 10px;
+	margin-top: 20px;
+}
+
+#comments {
+	padding-top: 40px;
+}

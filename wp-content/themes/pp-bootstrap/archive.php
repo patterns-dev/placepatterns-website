@@ -2,21 +2,21 @@
 			
 			
 <div id="content" class="clearfix row">
-	<div id="left-sidebar" class="span2">
+	<div id="left-sidebar" class="span3">
 		<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('my_filter_list') ) : ?>
 		<?php endif; ?>
 	</div>
 			
-	<div id="main" class="span10 clearfix" role="main">
+	<div id="main" class="span9 clearfix" role="main">
 	
 		<div class="page-header">
 			<?php if (is_category()) { ?>
 				<h1 class="archive_title h2">
-					<span><?php _e("Patterns and Places Categorized:", "bonestheme"); ?></span> <?php single_cat_title(); ?>
+					<?php single_cat_title(); ?>
 				</h1>
 			<?php } elseif (is_tag()) { ?> 
 				<h1 class="archive_title h2">
-					<span><?php _e("Patterns and Places Tagged:", "bonestheme"); ?></span> <?php single_tag_title(); ?>
+					<?php single_tag_title(); ?>
 				</h1>
 			<?php } elseif (is_tax()) { ?> 
 				<h1 class="archive_title h2">

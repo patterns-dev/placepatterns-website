@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 			
 <div id="content" class="clearfix row">
-	<div id="left-sidebar" class="span2">
+	<div id="left-sidebar" class="span3">
 		<?php if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar('my_filter_list') ) : ?>
 		<?php endif; ?>
 	</div>
 	
 	
-	<div id="main" class="span10 clearfix" role="main">
+	<div id="main" class="span9 clearfix" role="main">
 		<div id="thumbnail"> <ul>
 			<?php if (have_posts()) : while (have_posts()) : the_post(); 
 			    if (get_post_type()=='nav_menu_item') continue; ?>

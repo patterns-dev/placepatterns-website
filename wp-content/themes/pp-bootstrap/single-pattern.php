@@ -9,9 +9,11 @@
 				<div class="post">
 					<h1><?php the_title(); ?></h1>
 		
-					<?php if ( has_post_thumbnail() ): ?>
-						<div id="lead-image"> <?php the_post_thumbnail('medium'); ?></div>
-					<?php endif; ?>
+					<div id="lead-image">
+						<?php if ( has_post_thumbnail() ): ?>
+							 <?php the_post_thumbnail('medium'); ?>
+						<?php endif; ?>
+					</div>
 
 					<span><?php the_terms(0, 'scale', '<br /> Scale: ', ', ', ''); ?></span>
 					<span><?php the_tags('<br /> Tags: ', ', ', ''); ?></span>
@@ -63,33 +65,6 @@
 	</div>
 
 	
-
-	<?php
-	// Find connected pages
-	$connected = new WP_Query( array('connected_type' => 'places_to_patterns','connected_items' => get_queried_object(),'nopaging' => true) );
-	
-	// Display connected pages
-	if ( $connected->have_posts() ) : ?>
-		<div id="related-places" class="row">
-			<div class="span8 offset2">										
-				<h3>Places that have this pattern:</h3>
-				<div id="thumbnail">
-					<ul>
-					<?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
-					<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-						<?php pp_thumbnail(); ?>
-						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-					</li>
-					<?php endwhile; ?>
-					</ul>
-				</div>
-				
-				<?php // Prevent weirdness 
-				wp_reset_postdata(); ?>				
-			</div>
-		</div>
-	<?php endif; ?>	
-
 	<div id="author" class="row">
 		<div class="authorbox span7 offset3">
 			<div class="row">
@@ -118,6 +93,36 @@
 		</div> <!--authorbox-->
 		
 	</div>
+
+
+
+	<?php
+	// Find connected pages
+	$connected = new WP_Query( array('connected_type' => 'places_to_patterns','connected_items' => get_queried_object(),'nopaging' => true) );
+	
+	// Display connected pages
+	if ( $connected->have_posts() ) : ?>
+		<div id="related-places" class="row">
+			<div class="span8 offset2 related-places-inside">										
+				<h3>Places that have this pattern:</h3>
+				<div id="thumbnail">
+					<ul>
+					<?php while ( $connected->have_posts() ) : $connected->the_post(); ?>
+					<li id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+						<?php pp_thumbnail(); ?>
+						<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+					</li>
+					<?php endwhile; ?>
+					</ul>
+				</div>
+				
+				<?php // Prevent weirdness 
+				wp_reset_postdata(); ?>				
+			</div>
+		</div>
+	<?php endif; ?>	
+
+
 
 	<div id="comments" class="row">
 		<div class="span8 offset2">
