@@ -614,6 +614,15 @@ h1 { font-size: 1.5em; }
 .navbar {
 	margin-left: 0px;
 }
+
+.navbar .nav {
+	margin: 4px 10px 0 0;
+}
+
+.navbar .search-query {
+	margin-top: 4px;
+}
+
 body {
 	padding-top: 60px !important;
 }
@@ -701,7 +710,10 @@ body {
 	font-style: italic;
 	}
 
-#conflict, #resolution {
+/*****/
+
+/* #conflict, */
+#resolution {
 	font-weight: bold;
 }
 #conflict, #resolution, #context, #discussion
