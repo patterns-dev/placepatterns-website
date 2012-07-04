@@ -54,6 +54,10 @@ function pp_thumbnail() {
 	$html = get_the_post_thumbnail($id, array(150,150));
 	if(!empty($html)){
 		echo '<a href="' .get_permalink($id) .'">' .$html .'</a>';
+	} 
+	//Added for posts w/out thumbnail - EI 4 July 2012
+	else {
+		echo '<a href="' .get_permalink($id) .'"><img src="'. get_stylesheet_directory_uri() . '/images/NoPic.png"/></a>';
 	}
 }
 
