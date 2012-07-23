@@ -45,102 +45,6 @@ class acf_Repeater extends acf_Field
 	}
 	
 	
-	
-	/*--------------------------------------------------------------------------------------
-	*
-	*	create_field_row
-	*
-	*	@author Elliot Condon
-	*	@since 3.2.1
-	* 
-	*-------------------------------------------------------------------------------------
-	
-	function temp_create_row( $options = array() )
-	{
-	
-		// vars
-		$defaults = array(
-			'i' => 999,
-			'row_limit' => 999,
-			'layout' => 'row',
-			'sub_fields' => false
-		);
-		$options = array_merge($defaults, $options);
-		
-		
-		?>
-		<tr class="<?php echo ( $options['i'] == 999 ) ? "row_clone" : "row"; ?>">
-					
-			<?php 
-			
-			// add order number, if row_limit > 1
-			
-			if( $options['row_limit'] > 1 ): ?>
-				<td class="order"><?php echo $i+1; ?></td>
-			<?php endif; 
-			
-			
-			// if layout is row, create a td to hold all the fields
-			
-			if( $options['layout'] == 'row'): ?>
-				<td>
-			<?php endif;
-			
-			
-			// loop through sub fields
-			if( $options['sub_fields'] ):
-				foreach( $options['sub_fields'] as $j => $sub_field):
-				
-					if( $options['layout'] == 'table' ): ?>
-					<td>
-			<?php else: ?>
-			<div class="row-layout-field">
-			<p class="label">
-				<label><?php echo $sub_field['label']; ?></label>
-				<?php 
-				
-				if(!isset($sub_field['instructions']))
-					$sub_field['instructions'] = "";
-				
-				echo $sub_field['instructions']; 
-				
-				?>
-			</p>
-			<?php endif; ?>	
-				
-				<?php 
-				// add value
-				$sub_field['value'] = isset($value[$sub_field['name']]) ? $value[$sub_field['name']] : '';
-				
-				// add name
-				$sub_field['name'] = $field['name'] . '[' . $i . '][' . $sub_field['key'] . ']';
-				
-				// create field
-				$this->parent->create_field($sub_field);
-				?>
-				
-			<?php if($layout == 'table'): ?>
-			</td>
-			<?php else: ?>
-			</div>
-			<?php endif; ?>	
-			
-			<?php endforeach;
-			endif; ?>
-			
-			<?php if( $options['layout'] == 'row'): ?>
-				</td>
-			<?php endif; ?>
-			
-			<?php if( $options['row_limit'] > 1 ): ?>
-				<td class="remove"><a class="remove_row" id="r_remove_row" href="javascript:;"></a></td>
-			<?php endif; ?>
-		</tr>
-		<?php
-	}
-	*/
-	
-	
 	/*--------------------------------------------------------------------------------------
 	*
 	*	create_field
@@ -154,155 +58,170 @@ class acf_Repeater extends acf_Field
 	function create_field($field)
 	{
 		// vars
-		$row_limit = ( isset($field['row_limit']) && is_numeric($field['row_limit']) ) ? $field['row_limit'] : 999;
-		$layout = isset($field['layout']) ? $field['layout'] : 'table';
-		$sub_fields = isset($field['sub_fields']) ? $field['sub_fields'] : array();
-		$button_label = ( isset($field['button_label']) && $field['button_label'] != "" ) ? $field['button_label'] : __("Add Row",'acf');
+		$defaults = array(
+			'row_limit'		=>	0,
+			'row_min'		=>	0,
+			'layout' 		=> 'table',
+			'sub_fields'	=>	array(),
+			'button_label'	=>	__("Add Row",'acf'),
+			'value'			=>	array(),
+		);
+		
+		$field = array_merge($defaults, $field);
 		
 		
-		// add clone field
-		if($row_limit == 1 && count($field['value']) == 0)
+		// validate types
+		$field['row_limit'] = (int) $field['row_limit'];
+		$field['row_min'] = (int) $field['row_min'];
+		
+		
+		// row limit = 0?
+		if( $field['row_limit'] == 0 )
 		{
-			$field['value'][] = array();
+			$field['row_limit'] = 999;
 		}
+		
+		
+		// min rows
+		if( $field['row_min'] > count($field['value']) )
+		{
+			for( $i = 0; $i < $field['row_min']; $i++ )
+			{
+				if( ! isset($field['value'][$i]) )
+				{
+					$field['value'][$i] = array();
+				}
+			}
+		}
+		
+		
+		// max rows
+		if( $field['row_limit'] < count($field['value']) )
+		{
+			for( $i = 0; $i < count($field['value']); $i++ )
+			{
+				if( $i >= $field['row_limit'] )
+				{
+					unset( $field['value'][$i] );
+				}
+			}
+		}
+		
+		
+		// setup values for row clone
+		$field['value'][999] = array();
+		foreach( $field['sub_fields'] as $sub_field)
+		{
+			$sub_value = isset($sub_field['default_value']) ? $sub_field['default_value'] : false;
+			$field['value'][999][$sub_field['name']] = $sub_value;
+		}
+		
 
-		?>
-		<div class="repeater" data-row_limit="<?php echo $row_limit; ?>">
-			
-			
-			<script type="text/html" class="clone"><tr><?php 
+?>
+<div class="repeater" data-min_rows="<?php echo $field['row_min']; ?>" data-max_rows="<?php echo $field['row_limit']; ?>">
+	<table class="widefat <?php if( $field['layout'] == 'row' ): ?>row_layout<?php endif; ?>">
+	<?php if( $field['layout'] == 'table' ): ?>
+		<thead>
+			<tr><?php
 				
-					if($row_limit > 1): ?><td class="order"></td><?php endif; 
-					
-					if($layout == 'row'): ?><td><?php endif; 
-					
-					foreach($sub_fields as $j => $sub_field):
-					
-					if($layout == 'table'): 
-						?><td><?php 
-					else:
-						?><div class="row-layout-field"><p class="label"><label><?php echo $sub_field['label']; ?></label><?php 
-						
-						if(!isset($sub_field['instructions']))
-							$sub_field['instructions'] = "";
-						
-						echo $sub_field['instructions']; 
-						
-					?></p><?php
-					
-					endif; 
-					
-						// add value
-						$sub_field['value'] = isset($sub_field['default_value']) ? $sub_field['default_value'] : '';
-						
-						// add name
-						$sub_field['name'] = $field['name'] . '[999][' . $sub_field['key'] . ']';
-						
-						// create field
-						$this->parent->create_field($sub_field);
-						
-					if($layout == 'table'):
-						?></td><?php
-					else:
-						?></div><?php
-					endif; 
-					
-					endforeach; 
-					
-					if($layout == 'row'): ?></td><?php endif; 
-					
-					if($row_limit > 1): ?><td class="remove"><a class="add-row add-row-before" href="javascript:;"></a><a class="remove-row" href="javascript:;"></a></td><?php endif; 
+				if( $field['row_limit'] > 1 ): ?><th class="order"></th><?php endif;
 				
-				?></tr></script>
+				foreach( $field['sub_fields'] as $sub_field_i => $sub_field):
+					?><th class="<?php echo $sub_field['name']; ?>" <?php if($sub_field_i != 0): ?>style="width:<?php echo 95/count( $field['sub_fields'] ); ?>%;"<?php endif; ?>><span><?php echo $sub_field['label']; ?></span></th><?php
+				endforeach;
+										
+				if( $field['row_min'] < $field['row_limit'] ):  ?><th class="remove"></th><?php endif;
+				
+			?></tr>
+		</thead>
+	<?php endif; ?>
+	<tbody>
+	<?php if( $field['value'] ): foreach($field['value'] as $i => $value):
+		
+		?><tr class="<?php echo ($i == 999) ? "row-clone" : "row"; ?>"><?php
+		
+		if( $field['row_limit'] > 1 ): 
+			?><td class="order"><?php echo $i+1; ?></td><?php
+		endif;
+		
+		if( $field['layout'] == 'row' ): ?><td><?php endif;
+		
+		
+			foreach( $field['sub_fields'] as $j => $sub_field ):
+			
+				if( $field['layout'] == 'table'):
+					
+					?><td><?php
+				
+				else: 
+				
+					?><div class="row-layout-field">
+						<p class="label">
+							<label><?php echo $sub_field['label']; ?></label><?php 
+							
+							if(!isset($sub_field['instructions']))
+							{
+								$sub_field['instructions'] = "";
+							}
+							
+							echo $sub_field['instructions']; 
+							
+						?></p><?php
+				
+				endif;
+				
+				// add value
+				$sub_field['value'] = isset($value[$sub_field['name']]) ? $value[$sub_field['name']] : '';
+					
+				// add name
+				$sub_field['name'] = $field['name'] . '[' . $i . '][' . $sub_field['key'] . ']';
+					
+				// create field
+				$this->parent->create_field($sub_field);
+				
+				
+				if( $field['layout'] == 'table' ): 
+				
+					?></td><?php
+				
+				else: 
+				
+					?></div><?php
+				
+				endif; 
+			
+			endforeach; 
 			
 			
-			<table class="widefat <?php if($layout == 'row'): ?>row_layout<?php endif; ?>">
-			<?php if($layout == 'table'): ?>
-				<thead>
-					<tr><?php
-						
-						if($row_limit > 1): ?><th class="order"></th><?php endif;
-						
-						foreach($sub_fields as $sub_field_i => $sub_field):
-							?><th class="<?php echo $sub_field['name']; ?>" <?php if($sub_field_i != 0): ?>style="width:<?php echo 95/count($sub_fields); ?>%;"<?php endif; ?>><span><?php echo $sub_field['label']; ?></span></th><?php
-						endforeach;
-												
-						if($row_limit > 1): ?><th class="remove"></th><?php endif;
-						
-					?></tr>
-				</thead>
-			<?php endif; ?>
-			<tbody>
-				<?php if( $field['value'] ): foreach($field['value'] as $i => $value):?>
+		if( $field['layout'] == 'row' ): ?></td><?php endif; 
+		
+		if( $field['row_min'] < $field['row_limit'] ):
+			
+			?><td class="remove">
+				<a class="add-row add-row-before" href="javascript:;"></a>
+				<a class="remove-row" href="javascript:;"></a>
+			</td><?php
+		
+		endif; 
+		
+		?></tr><?php 
+	
+	endforeach; endif; 
+	
+	?>
+	</tbody>
+	</table>
+	<?php if( $field['row_min'] < $field['row_limit'] ): ?>
 
-				<tr>
-					
-					<?php if($row_limit > 1): ?>
-						<td class="order">
-						<?php echo $i+1; ?>
-						</td>
-					<?php endif; ?>
-					
-					<?php if($layout == 'row'): ?><td><?php endif; ?>
-					
-					<?php foreach($sub_fields as $j => $sub_field):?>
-					
-					<?php if($layout == 'table'): ?>
-					<td>
-					<?php else: ?>
-					<div class="row-layout-field">
-					<p class="label">
-						<label><?php echo $sub_field['label']; ?></label>
-						<?php 
-						
-						if(!isset($sub_field['instructions']))
-							$sub_field['instructions'] = "";
-						
-						echo $sub_field['instructions']; 
-						
-						?>
-					</p>
-					<?php endif; ?>	
-						
-						<?php 
-						// add value
-						$sub_field['value'] = isset($value[$sub_field['name']]) ? $value[$sub_field['name']] : '';
-						
-						// add name
-						$sub_field['name'] = $field['name'] . '[' . $i . '][' . $sub_field['key'] . ']';
-						
-						// create field
-						$this->parent->create_field($sub_field);
-						?>
-						
-					<?php if($layout == 'table'): ?>
-					</td>
-					<?php else: ?>
-					</div>
-					<?php endif; ?>	
-					
-					<?php endforeach; ?>
-					
-					<?php if($layout == 'row'): ?></td><?php endif; ?>
-					
-					<?php if($row_limit > 1): ?>
-						<td class="remove"><a class="add-row add-row-before" href="javascript:;"></a><a class="remove-row" href="javascript:;"></a></td>
-					<?php endif; ?>
-				</tr>
-				<?php endforeach; endif; ?>
-			</tbody>
-			</table>
-			<?php if($row_limit > 1): ?>
-			<div class="table_footer">
-				<ul class="hl clearfix">
-					<li class="right">
-						<a href="javascript:;" class="add-row-end acf-button"><?php echo $button_label; ?></a>
-					</li>
-				</ul>
-			</div>	
-			<?php endif; ?>	
-		</div>
-		<?php
+	<ul class="hl clearfix repeater-footer">
+		<li class="right">
+			<a href="javascript:;" class="add-row-end acf-button"><?php echo $field['button_label']; ?></a>
+		</li>
+	</ul>
+
+	<?php endif; ?>	
+</div>
+<?php
 	}
 	
 	
@@ -321,10 +240,20 @@ class acf_Repeater extends acf_Field
 	{
 		// vars
 		$fields_names = array();
-		$field['row_limit'] = isset($field['row_limit']) ? $field['row_limit'] : '';
-		$field['layout'] = isset($field['layout']) ? $field['layout'] : 'table';
-		$field['sub_fields'] = isset($field['sub_fields']) ? $field['sub_fields'] : array();
-		$field['button_label'] = (isset($field['button_label']) && $field['button_label'] != "") ? $field['button_label'] : __("Add Row",'acf');
+		$defaults = array(
+			'row_limit'		=>	'',
+			'row_min'		=>	'0',
+			'layout' 		=> 'table',
+			'sub_fields'	=>	array(),
+			'button_label'	=>	__("Add Row",'acf'),
+			'value'			=>	array(),
+		);
+		
+		$field = array_merge($defaults, $field);
+		
+		
+		// validate types
+		$field['row_min'] = (int) $field['row_min'];
 		
 		
 		// add clone field
@@ -341,8 +270,6 @@ class acf_Repeater extends acf_Field
 		{
 			$fields_names[$f->name] = $f->title;
 		}
-		//unset($fields_names['repeater']);
-		//unset($fields_names['flexible_content']);
 		
 		?>
 <tr class="field_option field_option_<?php echo $this->name; ?>">
@@ -480,10 +407,23 @@ class acf_Repeater extends acf_Field
 	</div>
 	</td>
 </tr>
-	
 <tr class="field_option field_option_<?php echo $this->name; ?>">
 	<td class="label">
-		<label><?php _e("Row Limit",'acf'); ?></label>
+		<label><?php _e("Minimum Rows",'acf'); ?></label>
+	</td>
+	<td>
+		<?php 
+		$this->parent->create_field(array(
+			'type'	=>	'text',
+			'name'	=>	'fields['.$key.'][row_min]',
+			'value'	=>	$field['row_min'],
+		));
+		?>
+	</td>
+</tr>
+<tr class="field_option field_option_<?php echo $this->name; ?>">
+	<td class="label">
+		<label><?php _e("Maximum Rows",'acf'); ?></label>
 	</td>
 	<td>
 		<?php 

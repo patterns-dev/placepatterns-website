@@ -65,43 +65,59 @@ class acf_Flexible_content extends acf_Field
 					<table class="widefat">
 
 						<tbody>
-							<tr>
-								<?php if($layout['display'] == 'row'): ?><td><?php endif; ?>
+							<tr><?php 
 								
-								<?php $l = 0; foreach($layout['sub_fields'] as $sub_field): $l++; ?>
+								if($layout['display'] == 'row'):
+									?><td><?php 
+								endif; 
 								
-									<?php if($layout['display'] == 'table'): ?><td style="width:<?php echo 100/count($layout['sub_fields']); ?>%;"><?php endif; ?>	
+								$l = 0; 
+								foreach($layout['sub_fields'] as $sub_field):
 									
-									<p class="label">
-										<label><?php echo $sub_field['label']; ?></label>
-										<?php 
+									$l++;
+									
+									if($layout['display'] == 'table'): 
+										?><td style="width:<?php echo 100/count($layout['sub_fields']); ?>%;"><?php
+									else:
+										?><div class="row-layout-field"><?php
+									endif;
+									
+									?><p class="label">
+										<label><?php echo $sub_field['label']; ?></label><?php 
 										
 										if(!isset($sub_field['instructions']))
 											$sub_field['instructions'] = "";
 										
 										echo $sub_field['instructions']; 
 										
-										?>
-									</p>
+									?></p>
 					
-									<input type="hidden" name="<?php echo $field['name'] ?>[999][acf_fc_layout]" value="<?php echo $layout['name']; ?>" />
+									<input type="hidden" name="<?php echo $field['name']; ?>[999][acf_fc_layout]" value="<?php echo $layout['name']; ?>" />
 									<?php 
+									
 									// add value
-									$sub_field['value'] = isset($sub_field['default_value']) ? $sub_field['default_value'] : '';
+									$sub_field['value'] = isset($sub_field['default_value']) ? $sub_field['default_value'] : false;
 									
 									// add name
 									$sub_field['name'] = $field['name'] . '[999][' . $sub_field['key'] . ']';
 									
 									// create field
 									$this->parent->create_field($sub_field);
-									?>
 									
-									<?php if($layout['display'] == 'table'): ?></td><?php endif; ?>
 									
-								<?php endforeach; ?>
+									if($layout['display'] == 'table'):
+										?></td><?php
+									else:
+										?></div><?php
+									endif;
 								
-								<?php if($layout['display'] == 'row'): ?></td><?php endif; ?>
-							</tr>
+								endforeach; 
+								
+								if($layout['display'] == 'row'):
+									?></td><?php 
+								endif;
+								
+							?></tr>
 						</tbody>
 						
 					</table>
@@ -176,22 +192,20 @@ class acf_Flexible_content extends acf_Field
 				<?php endif; ?>
 				<?php // values here ?>
 			</div>
-			<div class="table_footer">
-				<div class="order_message"></div>
-				<div class="acf_popup">
-					<ul>
-						<?php foreach($field['layouts'] as $layout): $i++; ?>
-						<li><a href="javascript:;" data-layout="<?php echo $layout['name']; ?>"><?php echo $layout['label']; ?></a></li>
-						<?php endforeach; ?>
-					</ul>
-					<div class="bit"></div>
-				</div>
-				<ul class="hl clearfix">
-					<li class="right">
-						<a href="javascript:;" id="fc_add_row" class="add_row acf-button"><?php echo $button_label; ?></a>
-					</li>
-				</ul>
-			</div>	
+
+			<ul class="hl clearfix flexible-footer">
+				<li class="right">
+					<a href="javascript:;" class="add-row-end acf-button"><?php echo $button_label; ?></a>
+					<div class="acf-popup">
+						<ul>
+							<?php foreach($field['layouts'] as $layout): $i++; ?>
+							<li><a href="javascript:;" data-layout="<?php echo $layout['name']; ?>"><?php echo $layout['label']; ?></a></li>
+							<?php endforeach; ?>
+						</ul>
+						<div class="bit"></div>
+					</div>
+				</li>
+			</ul>
 
 		</div>
 		<?php
@@ -628,7 +642,7 @@ class acf_Flexible_content extends acf_Field
 		}
 		
 
-		if($layout_order)
+		if( !empty( $layout_order) )
 		{
 			$i = -1;
 			// loop through rows
@@ -654,7 +668,11 @@ class acf_Flexible_content extends acf_Field
 				}
 			}
 		}
-		
+		else
+		{
+			$values = false;
+		}
+
 		return $values;	
 	}
 	

@@ -7,9 +7,21 @@
 */
 
 var acf = {
+	admin_url : '',
+	post_id : 0,
 	validation : false,
-	validation_message : "Validation Failed. One or more fields below are required.", // this is overriden by a script tag generated in admin_head for translation
-	editor_mode : 'visual'
+	text : {
+		'validation_error' : "Validation Failed. One or more fields below are required.",
+		'file_tb_title_add' : "Add File to Field",
+		'file_tb_title_edit' : "Edit File",
+		'image_tb_title_add' : "Add Image to Field",
+		'image_tb_title_edit' : "Edit Image",
+		'relationship_max_alert' : "Maximum values reached ( {max} values )",
+		'gallery_tb_title_add' : "Add Image to Gallery",
+		'gallery_tb_title_edit' : "Edit Image",
+		'repeater_min_alert' : "Minimum rows reached ( {min} rows )",
+		'repeater_max_alert' : "Maximum rows reached ( {max} rows )"
+	}
 };
 
 (function($){
@@ -31,7 +43,7 @@ var acf = {
 	/*
 	*  Document Ready
 	*
-	*  @description: adds ajax data		
+	*  @description: adds ajax data
 	*  @created: 1/03/2011
 	*/
 	
@@ -49,7 +61,7 @@ var acf = {
 		$('#poststuff .postbox.acf_postbox').each(function(){
 			
 			// vars
-			var options = $(this).find('.inside > .options');
+			var options = $(this).find('> .inside > .options');
 			var show = options.attr('data-show');
 			var layout = options.attr('data-layout');
 			var id = $(this).attr('id').replace('acf_', '');
@@ -81,14 +93,11 @@ var acf = {
 		// do validation
 		do_validation();
 		
-		if(acf.valdation == false)
+		if(acf.validation == false)
 		{
-			// reset validation for next time
-			acf.valdation = true;
-			
 			// show message
 			$(this).siblings('#message').remove();
-			$(this).before('<div id="message" class="error"><p>' + acf.validation_message + '</p></div>');
+			$(this).before('<div id="message" class="error"><p>' + acf.text.validation_error + '</p></div>');
 			
 			
 			// hide ajax stuff on submit button
@@ -114,6 +123,8 @@ var acf = {
 	*/
 	
 	function do_validation(){
+		
+		acf.validation = true;
 		
 		$('.field.required:visible, .form-field.required').each(function(){
 			
@@ -150,7 +161,7 @@ var acf = {
 			if($(this).find('.repeater').exists())
 			{
 
-				if($(this).find('.repeater table tbody tr').exists())
+				if($(this).find('.repeater tr.row').exists())
 				{
 					validation = true;
 				}
@@ -175,11 +186,27 @@ var acf = {
 				}
 				
 			}
+			
+			
+			// gallery
+			if($(this).find('.acf-gallery').exists())
+			{
+				if($(this).find('.acf-gallery .thumbnail').exists())
+				{
+					validation = true;
+				}
+				else
+				{
+					validation = false;
+				}
+				
+			}
+			
 
 			// set validation
 			if(!validation)
 			{
-				acf.valdation = false;
+				acf.validation = false;
 				$(this).closest('.field').addClass('error');
 			}
 			
@@ -223,11 +250,15 @@ var acf = {
 			
 	$(document).ready(function(){
 	
-		$('body').append('<div id="acf_color_picker" />');
-		if($.farbtastic)
+		// validate
+		if( ! $.farbtastic)
 		{
-			farbtastic = $.farbtastic('#acf_color_picker');
+			return;
 		}
+		
+		$('body').append('<div id="acf_color_picker" />');
+		
+		farbtastic = $.farbtastic('#acf_color_picker');
 		
 	});
 	
@@ -236,7 +267,14 @@ var acf = {
 	$(document).live('acf/setup_fields', function(e, postbox){
 		
 		$(postbox).find('input.acf_color_picker').each(function(i){
-		
+			
+			// validate
+			if( ! $.farbtastic)
+			{
+				return;
+			}
+			
+			
 			$.farbtastic( $(this) ).setColor( $(this).val() ).hsl[2] > 0.5 ? color = '#000' : color = '#fff';
 			$(this).css({ 
 				backgroundColor : $(this).val(),
@@ -276,29 +314,51 @@ var acf = {
 	*  @created: 1/03/2011
 	*/
 	
-	$('.acf_file_uploader .no-file .button').live('click', function(){
+	// add file
+	$('.acf-file-uploader .add-file').live('click', function(){
 				
 		// vars
-		var div = $(this).closest('.acf_file_uploader');
+		var div = $(this).closest('.acf-file-uploader');
 		
 		// set global var
 		window.acf_div = div;
 			
 		// show the thickbox
-		tb_show('Add File to field', acf.admin_url + 'media-upload.php?post_id=' + acf.post_id + '&type=file&acf_type=file&TB_iframe=1');
+		tb_show( acf.text.file_tb_title_add , acf.admin_url + 'media-upload.php?post_id=' + acf.post_id + '&type=file&acf_type=file&TB_iframe=1');
 	
 		return false;
 	});
-		
-	$('.acf_file_uploader .acf-file-delete').live('click', function(){
+	
+	// remove file
+	$('.acf-file-uploader .remove-file').live('click', function(){
 		
 		// vars
-		var div = $(this).closest('.acf_file_uploader');
+		var div = $(this).closest('.acf-file-uploader');
 		
 		div.removeClass('active').find('input.value').val('');
 		
 		return false;
 		
+	});
+	
+	// edit file
+	$('.acf-file-uploader .edit-file').live('click', function(){
+		
+		// vars
+		var div = $(this).closest('.acf-file-uploader'),
+			id = div.find('input.value').val();
+		
+
+		// set global var
+		window.acf_edit_attachment = div;
+				
+		
+		// show edit attachment
+		tb_show( acf.text.file_tb_title_edit , acf.admin_url + 'media.php?attachment_id=' + id + '&action=edit&acf_action=edit_attachment&acf_field=file&TB_iframe=1');
+		
+		
+		return false;
+			
 	});
 	
 	
@@ -309,30 +369,54 @@ var acf = {
 	*  @created: 1/03/2011
 	*/
 	
-	$('.acf_image_uploader .button').live('click', function(){
+	// add image
+	$('.acf-image-uploader .add-image').live('click', function(){
 				
 		// vars
-		var div = $(this).closest('.acf_image_uploader');
-		var preview_size = div.attr('data-preview_size');
+		var div = $(this).closest('.acf-image-uploader'),
+			preview_size = div.attr('data-preview_size');
 		
 		// set global var
 		window.acf_div = div;
 			
 		// show the thickbox
-		tb_show('Add Image to field', acf.admin_url + 'media-upload.php?post_id=' + acf.post_id + '&type=image&acf_type=image&acf_preview_size=' + preview_size + 'TB_iframe=1');
+		tb_show( acf.text.image_tb_title_add , acf.admin_url + 'media-upload.php?post_id=' + acf.post_id + '&type=image&acf_type=image&acf_preview_size=' + preview_size + 'TB_iframe=1');
 	
 		return false;
 	});
-		
-	$('.acf_image_uploader .remove_image').live('click', function(){
+	
+	// remove image
+	$('.acf-image-uploader .remove-image').live('click', function(){
 		
 		// vars
-		var div = $(this).closest('.acf_image_uploader');
+		var div = $(this).closest('.acf-image-uploader');
 		
-		div.removeClass('active').find('input.value').val('');
+		div.removeClass('active');
+		div.find('input.value').val('');
+		div.find('img').attr('src', '');
 		
 		return false;
+			
+	});
+	
+	// edit image
+	$('.acf-image-uploader .edit-image').live('click', function(){
 		
+		// vars
+		var div = $(this).closest('.acf-image-uploader'),
+			id = div.find('input.value').val();
+		
+
+		// set global var
+		window.acf_edit_attachment = div;
+				
+		
+		// show edit attachment
+		tb_show( acf.text.image_tb_title_edit , acf.admin_url + 'media.php?attachment_id=' + id + '&action=edit&acf_action=edit_attachment&acf_field=image&TB_iframe=1');
+		
+		
+		return false;
+			
 	});
 	
 	
@@ -343,27 +427,28 @@ var acf = {
 	*  @created: 3/03/2011
 	*/
 	
-	// on mouse over, make list sortable
-	$('.acf_relationship').live('mouseenter', function(){
+	$(document).live('acf/setup_fields', function(e, postbox){
 		
-		if($(this).attr('data-is_setup')) return false;
-		
-		$(this).attr('data-is_setup','true');
-		
-		$(this).find('.relationship_right .relationship_list').sortable({
-			axis: "y", // limit the dragging to up/down only
-		    start: function(event, ui)
-		    {
-				ui.item.addClass('sortable_active');
-		    },
-		    stop: function(event, ui)
-		    {
-		    	ui.item.removeClass('sortable_active');
-		    	ui.item.closest('.acf_relationship').update_acf_relationship_value();
-		    }
+		$(postbox).find('.acf_relationship').each(function(){
+			
+			$(this).find('.relationship_right .relationship_list').unbind('sortable').sortable({
+				axis: "y", // limit the dragging to up/down only
+				items: 'a:not(.hide)',
+			    start: function(event, ui)
+			    {
+					ui.item.addClass('sortable_active');
+			    },
+			    stop: function(event, ui)
+			    {
+			    	ui.item.removeClass('sortable_active');
+			    	ui.item.closest('.acf_relationship').update_acf_relationship_value();
+			    }
+			});
+			
 		});
 		
 	});
+	
 	
 	// updates the input value of a relationship field
 	$.fn.update_acf_relationship_value = function(){
@@ -397,7 +482,7 @@ var acf = {
 		// max posts
 		if(right.find('a:not(.hide)').length >= max)
 		{
-			alert('Maximum values reached ( ' + max + ' values )');
+			alert( acf.text.relationship_max_alert.replace('{max}', max) );
 			return false;
 		}
 
@@ -484,16 +569,17 @@ var acf = {
 	// store wysiwyg buttons
 	var acf_wysiwyg_buttons = {};
 	
+	
 	// destroy wysiwyg
 	$.fn.acf_deactivate_wysiwyg = function(){
-
+		
 		$(this).find('.acf_wysiwyg textarea').each(function(){
-
+			wpActiveEditor = null;
 			tinyMCE.execCommand("mceRemoveControl", false, $(this).attr('id'));
-			
 		});
 		
 	};
+	
 	
 	// create wysiwyg
 	$.fn.acf_activate_wysiwyg = function(){
@@ -502,8 +588,10 @@ var acf = {
 		// add tinymce to all wysiwyg fields
 		$(this).find('.acf_wysiwyg textarea').each(function(){
 			
+			
 			if(tinyMCE != undefined && tinyMCE.settings != undefined)
 			{
+
 				// reset buttons
 				tinyMCE.settings.theme_advanced_buttons1 = acf_wysiwyg_buttons.theme_advanced_buttons1;
 				tinyMCE.settings.theme_advanced_buttons2 = acf_wysiwyg_buttons.theme_advanced_buttons2;
@@ -512,7 +600,8 @@ var acf = {
 				
 				if(toolbar == 'basic')
 				{
-					tinyMCE.settings.theme_advanced_buttons1 = "bold,italic,formatselect,|,link,unlink,|,bullist,numlist,|,undo,redo";
+					//'bold', 'italic', 'underline', 'blockquote', 'separator', 'strikethrough', 'bullist', 'numlist', 'justifyleft', 'justifycenter', 'justifyright', 'undo', 'redo', 'link', 'unlink', 'fullscreen'
+					tinyMCE.settings.theme_advanced_buttons1 = "bold, italic, underline, blockquote, |, strikethrough, bullist, numlist, justifyleft, justifycenter, justifyright, undo, redo, link, unlink, fullscreen";
 					tinyMCE.settings.theme_advanced_buttons2 = "";
 				}
 				else
@@ -520,9 +609,11 @@ var acf = {
 					// add images + code buttons
 					tinyMCE.settings.theme_advanced_buttons2 += ",code";
 				}
+				
+				
 			}
 			
-			//tinyMCE.init(tinyMCEPreInit.mceInit);
+			wpActiveEditor = null;
 			tinyMCE.execCommand('mceAddControl', false, $(this).attr('id'));
 
 		});
@@ -533,7 +624,7 @@ var acf = {
 	// create wysiwygs
 	$(document).live('acf/setup_fields', function(e, postbox){
 		
-		if(typeof(tinyMCE) != "object")
+		if( typeof(tinyMCE) != "object" )
 		{
 			return false;
 		}
@@ -541,40 +632,32 @@ var acf = {
 		$(postbox).acf_activate_wysiwyg();
 
 	});
+	
+	$(document).ready( function(){
 		
-	$(window).load(function(){
-		
-		
-		setTimeout(function(){
-		
-			$(document).trigger('acf/setup_fields', $('#poststuff'));
-
-		}, 1);
-		
-		
-		if(typeof(tinyMCE) != "object")
+		if( typeof(tinyMCE) != "object" )
 		{
 			return false;
 		}
-
-
+		
 		// store variables
-		if(tinyMCE != undefined && tinyMCE.settings != undefined)
+		if( tinyMCE.settings != undefined )
 		{
 			acf_wysiwyg_buttons.theme_advanced_buttons1 = tinyMCE.settings.theme_advanced_buttons1;
 			acf_wysiwyg_buttons.theme_advanced_buttons2 = tinyMCE.settings.theme_advanced_buttons2;
 		}
 		
+	});
+	
+	$(window).load(function(){
 		
-		// if editor_mode == html, toggle the html mode button on the default editor
-		if(acf.editor_mode && acf.editor_mode == "html")
-		{
-			// click html tab after the wysiwyg has been initialed to prevent dual editor buttons
-			setTimeout(function(){
-				$('#postdivrich #content-html').trigger('click');
-			}, 2);
-			
-		}
+		setTimeout(function(){
+			$('#acf_settings-tmce').trigger('click');
+		}, 1);
+		
+		setTimeout(function(){
+			$(document).trigger('acf/setup_fields', $('#poststuff'));
+		}, 10);
 		
 	});
 	
@@ -615,7 +698,7 @@ var acf = {
 	// update order numbers
 	function repeater_update_order( repeater )
 	{
-		repeater.children('table').children('tbody').children('tr').each(function(i){
+		repeater.find('> table > tbody > tr.row').each(function(i){
 			$(this).children('td.order').html(i+1);
 		});
 	
@@ -632,11 +715,11 @@ var acf = {
 			return ui;
 		};
 		
-		repeater.children('table').children('tbody').unbind('sortable').sortable({
+		repeater.find('> table > tbody').unbind('sortable').sortable({
 			update: function(event, ui){
 				repeater_update_order( repeater );
 			},
-			items : '> tr',
+			items : '> tr.row',
 			handle: '> td.order',
 			helper: fixHelper,
 			forceHelperSize: true,
@@ -656,9 +739,21 @@ var acf = {
 	$(document).live('acf/setup_fields', function(e, postbox){
 		
 		$(postbox).find('.repeater').each(function(){
-		
-			var repeater = $(this);
-			var row_limit = parseInt( repeater.attr('data-row_limit') );	
+			
+			var repeater = $(this),
+				min_rows = parseInt( repeater.attr('data-min_rows') ),
+				max_rows = parseInt( repeater.attr('data-max_rows') );	
+			
+			
+			// move row-clone to be the first element (to avoid double border css bug)
+			var row_clone = repeater.find('> table > tbody > tr.row-clone');
+			
+			// also, deactivate any wysiwyg in the row clone
+			row_clone.acf_deactivate_wysiwyg();
+			if( row_clone.index() != 0 )
+			{
+				row_clone.closest('tbody').prepend( row_clone );
+			}
 			
 			
 			// update classes based on row count
@@ -666,7 +761,7 @@ var acf = {
 			
 			
 			// sortable
-			if(row_limit > 1){
+			if( max_rows > 1 ){
 				repeater_add_sortable( repeater );
 			}
 			
@@ -679,9 +774,9 @@ var acf = {
 	function repeater_check_rows( repeater )
 	{
 		// vars
-		var row_limit = parseInt( repeater.attr('data-row_limit') );			
-		var row_count = repeater.children('table').children('tbody').children('tr').length;
-		
+		var max_rows = parseInt( repeater.attr('data-max_rows') ),
+			row_count = repeater.find('> table > tbody > tr.row').length;	
+
 		
 		// empty?
 		if( row_count == 0 )
@@ -695,7 +790,7 @@ var acf = {
 		
 		
 		// row limit reached
-		if( row_count >= row_limit )
+		if( row_count >= max_rows )
 		{
 			repeater.addClass('disabled');
 		}
@@ -709,26 +804,23 @@ var acf = {
 	// add field
 	function repeater_add_field( repeater, before )
 	{
-		
+		// vars
+		var max_rows = parseInt( repeater.attr('data-max_rows') ),
+			row_count = repeater.find('> table > tbody > tr.row').length;	
+			
+			
 		// validate
-		if( repeater.hasClass('disabled') )
+		if( row_count >= max_rows )
 		{
+			alert( acf.text.repeater_max_alert.replace('{max}', max_rows) );
 			return false;
 		}
 		
+	
 		// create and add the new field
-		var new_field = $( repeater.children('.clone').html() );
-		
-		
-		// update names
-		var new_id = uniqid();
-		new_field.find('[name]').each(function(){
-		
-			var name = $(this).attr('name').replace('[999]','[' + new_id + ']');
-			$(this).attr('name', name);
-			$(this).attr('id', name);
-			
-		});
+		var new_id = uniqid(),
+			new_field_html = repeater.find('> table > tbody > tr.row-clone').html().replace(/(="[\w-\[\]]*?)(\[999\])/g, '$1[' + new_id + ']'),
+			new_field = $('<tr class="row"></tr>').append( new_field_html );
 		
 		
 		// add row
@@ -738,8 +830,12 @@ var acf = {
 		}
 		else
 		{
-			repeater.children('table').children('tbody').append(new_field); 
+			repeater.find('> table > tbody').append(new_field); 
 		}
+		
+		
+		// trigger mouseenter on parent repeater to work out css margin on add-row button
+		repeater.closest('tr').trigger('mouseenter');
 		
 		
 		// update order
@@ -760,18 +856,28 @@ var acf = {
 	
 	
 	// add row - end
-	$('.repeater .add-row-end').live('click', function(){
+	$('.repeater .repeater-footer .add-row-end').live('click', function(){
+		
 		var repeater = $(this).closest('.repeater');
+		
+		
 		repeater_add_field( repeater, false );
+		
+		
 		return false;
 	});
 	
 	
 	// add row - before
 	$('.repeater .add-row-before').live('click', function(){
-		var repeater = $(this).closest('.repeater');
-		var before = $(this).closest('tr');
+		
+		var repeater = $(this).closest('.repeater'),
+			before = $(this).closest('tr');
+			
+			
 		repeater_add_field( repeater, before );
+		
+		
 		return false;
 	});
 	
@@ -779,10 +885,20 @@ var acf = {
 	function repeater_remove_row( tr )
 	{	
 		// vars
-		var repeater =  tr.closest('.repeater');
-		var column_count = tr.children().length;
-		var row_height = tr.height();
-
+		var repeater =  tr.closest('.repeater'),
+			min_rows = parseInt( repeater.attr('data-min_rows') ),
+			row_count = repeater.find('> table > tbody > tr.row').length,
+			column_count = tr.children('tr.row').length,
+			row_height = tr.height();
+			
+			
+		// validate
+		if( row_count <= min_rows )
+		{
+			alert( acf.text.repeater_min_alert.replace('{min}', row_count) );
+			return false;
+		}
+		
 		
 		// animate out tr
 		tr.addClass('acf-remove-item');
@@ -790,6 +906,11 @@ var acf = {
 			
 			tr.remove();
 			
+			
+			// trigger mouseenter on parent repeater to work out css margin on add-row button
+			repeater.closest('tr').trigger('mouseenter');
+		
+		
 			// update order
 			repeater_update_order( repeater );
 			
@@ -813,7 +934,7 @@ var acf = {
 	// hover over tr, align add-row button to top
 	$('.repeater tr').live('mouseenter', function(){
 		
-		var button = $(this).find('a.add-row');
+		var button = $(this).find('> td.remove > a.add-row');
 		var margin = ( button.parent().height() / 2 ) + 9; // 9 = padding + border
 		
 		button.css('margin-top', '-' + margin + 'px' );
@@ -822,71 +943,75 @@ var acf = {
 	
 	
 	
+	/*-----------------------------------------------------------------------------
+	*
+	*	Flexible Content
+	*
+	*----------------------------------------------------------------------------*/
 	
 	
 	/*
-	*  Field: Flexible Content
+	*  flexible_content_add_sortable
 	*
 	*  @description: 
-	*  @created: 3/03/2011
+	*  @created: 25/05/12
 	*/
 	
-	
-	// make sortable
-	function make_fc_sortable(div){
+	function flexible_content_add_sortable( div )
+	{
 		
-		// only apply once
-		if( div.children('.values').hasClass('ui-sortable') )
-		{
-			return false;
-		}
-		
-		
-		// add sortable
-		div.children('.values').sortable({
+		// remove (if clone) and add sortable
+		div.children('.values').unbind('sortable').sortable({
 			items : '> .layout',
-			handle: '> .actions .order',
-			//axis: "y" // limit the dragging to up/down only
+			handle: '> .actions .order'
 		});
-	}
+		
+	};
 	
 	
-	// add row
-	$('.acf_flexible_content #fc_add_row').live('click', function(){
+	/*
+	*  Show Popup
+	*
+	*  @description: 
+	*  @created: 25/05/12
+	*/
+	
+	$('.acf_flexible_content .flexible-footer .add-row-end').live('click', function()
+	{
 		$(this).trigger('focus');
-	});
-	
-	$('.acf_flexible_content #fc_add_row').live('focus', function(){
-
-		$(this).addClass('active');
-		$(this).closest('.table_footer').find('.acf_popup').css({display : 'block', opacity : 0, bottom : '15px'}).animate({ opacity : 1, bottom : '25px' }, 250);
-	
-	});
-	
-	
-	// add row
-	$('.acf_flexible_content #fc_add_row').live('blur', function(){
-
-		$(this).removeClass('active');
-		$(this).closest('.table_footer').find('.acf_popup').animate({ opacity : 0, bottom : '35px' }, 250, function(){
-			$(this).css({ display : 'none' });
-		});
-
-	});
-	
-	
-	// remove row
-	$('.acf_flexible_content .actions .delete').live('click', function(){
 		
+	}).live('focus', function()
+	{
+		$(this).siblings('.acf-popup').addClass('active');
 		
-		// elements
-		var layout = $(this).closest('.layout');
+	}).live('blur', function()
+	{
+		var button = $(this);
+		setTimeout(function(){
+			button.siblings('.acf-popup').removeClass('active');
+		}, 250);
+		
+	});
+	
+	
+	/*
+	*  flexible_content_remove_row
+	*
+	*  @description: 
+	*  @created: 25/05/12
+	*/
+	
+	function flexible_content_remove_layout( layout )
+	{
+		// vars
 		var div = layout.closest('.acf_flexible_content');
 		var temp = $('<div style="height:' + layout.height() + 'px"></div>');
 		
 		
-		// animate away layout
-		layout.animate({'left' : '50px', 'opacity' : 0}, 250, function(){
+		// animate out tr
+		layout.addClass('acf-remove-item');
+		setTimeout(function(){
+			
 			layout.before(temp).remove();
 			
 			temp.animate({'height' : 0 }, 250, function(){
@@ -898,44 +1023,43 @@ var acf = {
 				div.children('.no_value_message').show();
 			}
 			
-		});
+		}, 400);
 		
+	}
+	
+	
+	$('.acf_flexible_content .actions .delete').live('click', function(){
+		var layout = $(this).closest('.layout');
+		flexible_content_remove_layout( layout );
 		return false;
-		
 	});
 	
 	
 	// add layout
-	$('.acf_flexible_content .table_footer .acf_popup ul li a').live('click', function(){
-		
+	$('.acf_flexible_content .acf-popup ul li a').live('click', function(){
+
 		// vars
 		var layout = $(this).attr('data-layout');
 		var div = $(this).closest('.acf_flexible_content');
 		
-		// deactivate any wysiwygs
-		div.children('.clones').acf_deactivate_wysiwyg();
 		
 		// create new field
-		var new_field = div.children('.clones').children('.layout[data-layout="' + layout + '"]').clone(false);
-		
-		// update names
-		var new_id = uniqid();
-		new_field.find('[name]').each(function(){
-		
-			var name = $(this).attr('name').replace('[999]','[' + new_id + ']');
-			$(this).attr('name', name);
-			$(this).attr('id', name);
+		var new_id = uniqid(),
+			new_field_html = div.find('> .clones > .layout[data-layout="' + layout + '"]').html().replace(/(="[\w-\[\]]*?)(\[999\])/g, '$1[' + new_id + ']'),
+			new_field = $('<div class="layout" data-layout="' + layout + '"></div>').append( new_field_html );
 			
-		});
 
 		// hide no values message
 		div.children('.no_value_message').hide();
 		
+		
 		// add row
 		div.children('.values').append(new_field); 
 		
+		
 		// activate wysiwyg
 		$(document).trigger('acf/setup_fields',new_field);
+		
 		
 		// validation
 		div.closest('.field').removeClass('error');
@@ -948,9 +1072,14 @@ var acf = {
 	$(document).live('acf/setup_fields', function(e, postbox){
 		
 		$(postbox).find('.acf_flexible_content').each(function(){
-
+			
+			var div =  $(this);
+			
+			// deactivate any wysiwygs
+			div.children('.clones').acf_deactivate_wysiwyg();
+			
 			// sortable
-			make_fc_sortable($(this));
+			flexible_content_add_sortable( div );
 		});
 		
 	});
@@ -994,6 +1123,191 @@ var acf = {
 	});
 	
 	
+	/*
+	*  acf.add_message
+	*
+	*  @description: 
+	*  @since: 3.2.7
+	*  @created: 10/07/2012
+	*/
+	
+	acf.add_message = function( message, div ){
+		
+		var message = $('<div class="acf-message-wrapper"><div class="message updated"><p>' + message + '</p></div></div>');
+		
+		div.prepend( message );
+		
+		setTimeout(function(){
+			
+			message.animate({
+				opacity : 0
+			}, 250, function(){
+				message.remove();
+			});
+			
+		}, 1500);
+			
+	};
+	
+	
+	/*
+	*  Field: Gallery
+	*
+	*  @description: 
+	*  @since: 3.2.7
+	*  @created: 10/07/2012
+	*/
+	
+	acf.update_gallery_count = function( div )
+	{
+		// vars
+		var count = div.find('.thumbnails .thumbnail').length,
+			max_count = ( count > 2 ) ? 2 : count,
+			span = div.find('.toolbar .count');
+		
+		
+		span.html( span.attr('data-' + max_count).replace('{count}', count) );
+		
+	}
+	
+	
+	// view: Grid
+	$('.acf-gallery .toolbar .view-grid').live('click', function(){
+		
+		// vars
+		var gallery = $(this).closest('.acf-gallery');
+		
+		
+		// active class
+		$(this).parent().addClass('active').siblings('.view-list-li').removeClass('active');
+		
+		
+		// gallery class
+		gallery.removeClass('view-list');
+		
+		
+		return false;
+			
+	});
+	
+	
+	// view: Grid
+	$('.acf-gallery .toolbar .view-list').live('click', function(){
+		
+		// vars
+		var gallery = $(this).closest('.acf-gallery');
+		
+		
+		// active class
+		$(this).parent().addClass('active').siblings('.view-grid-li').removeClass('active');
+		
+		
+		// gallery class
+		gallery.addClass('view-list');
+		
+		
+		return false;
+			
+	});
+	
+	
+	// remove image
+	$('.acf-gallery .thumbnail .remove-image').live('click', function(){
+		
+		// vars
+		var thumbnail = $(this).closest('.thumbnail'),
+			gallery = thumbnail.closest('.acf-gallery');
+		
+		
+		thumbnail.animate({
+			opacity : 0
+		}, 250, function(){
+			
+			thumbnail.remove();
+			
+			acf.update_gallery_count( gallery );
+			
+		});
+		
+		return false;
+			
+	});
+	
+	
+	// remove image
+	$('.acf-gallery .thumbnail .edit-image').live('click', function(){
+		
+		// vars
+		var div = $(this).closest('.thumbnail'),
+			id = div.attr('data-id');
+		
+		
+		// set global var
+		window.acf_edit_attachment = div;
+				
+		
+		// show edit attachment
+		tb_show( acf.text.gallery_tb_title_edit , acf.admin_url + 'media.php?attachment_id=' + id + '&action=edit&acf_action=edit_attachment&acf_field=gallery&TB_iframe=1');
+		
+		
+		return false;
+			
+	});
+	
+	
+	// add image
+	$('.acf-gallery .toolbar .add-image').live('click', function(){
+		
+		// vars
+		var gallery = $(this).closest('.acf-gallery'),
+			preview_size = gallery.attr('data-preview_size');
+		
+		
+		// set global var
+		window.acf_div = gallery;
+			
+			
+		// show the thickbox
+		tb_show( acf.text.gallery_tb_title_add , acf.admin_url + 'media-upload.php?post_id=' + acf.post_id + '&type=image&acf_type=gallery&acf_preview_size=' + preview_size + 'TB_iframe=1');
+			
+			
+		return false;
+			
+	});
+	
+	
+	$(document).live('acf/setup_fields', function(e, postbox){
+		
+		$(postbox).find('.acf-gallery').each(function(i){
+			
+			// vars
+			var div = $(this),
+				thumbnails = div.find('.thumbnails');
+				
+			
+			// update count
+			acf.update_gallery_count( div );
+
+			
+			// sortable
+			thumbnails.find('> .inner').unbind('sortable').sortable({
+				items : '> .thumbnail',
+				/* handle: '> td.order', */
+				forceHelperSize: true,
+				forcePlaceholderSize: true,
+				scroll: true,
+				start: function (event, ui) {
+				
+					// alter width / height to allow for 2px border
+					ui.placeholder.width( ui.placeholder.width() - 4 );
+					ui.placeholder.height( ui.placeholder.height() - 4 );
+	   			}
+			});
+
+			
+		});
+	
+	});
 	
 	
 })(jQuery);
