@@ -736,3 +736,8 @@ body {
 #comments {
 	padding-top: 40px;
 }
+
+#subscribe-reloaded-list input,
+#subscribe-reloaded-action-p label {
+	display: inline;
+}

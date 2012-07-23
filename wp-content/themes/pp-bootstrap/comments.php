@@ -134,6 +134,8 @@ The comments page for Bones
 		</div>
 	</div>
 	
+	<?php if (function_exists('subscribe_reloaded_show')) subscribe_reloaded_show(); ?>
+	
 	<div class="form-actions">
 	  <input class="btn btn-primary" name="submit" type="submit" id="submit" tabindex="5" value="<?php _e("Submit Comment","bonestheme"); ?>" />
 	  <?php comment_id_fields(); ?>
