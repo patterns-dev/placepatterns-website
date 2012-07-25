@@ -112,10 +112,12 @@ function menus_register() {
 function my_get_posts( $query ) {
 	if ( is_home() || is_archive() ) {
 		$query->set( 'post_type', array( 'nav_menu_item', 'pattern', 'place') );
+
 	}
 	if ( is_home() ) {	
 		$query->set('orderby', 'meta_value');
-		$query->set('meta_key', '_thumbnail_id');	
+		$query->set('meta_key', '_thumbnail_id');
+		$query->set('orderby', 'modified');
 	}
 	return $query;
 } 
