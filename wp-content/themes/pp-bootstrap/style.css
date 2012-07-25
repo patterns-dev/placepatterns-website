@@ -85,7 +85,7 @@ input, textarea, select, .uneditable-input {
 }
 
 #content{
-	padding: 10px 0 0;
+	padding: 70px 0 0;
 }
 
 .more-link{
@@ -467,7 +467,7 @@ blockquote.pull-left{
 
 
 
-@media only screen and (min-width: 940px) {
+/*@media only screen and (min-width: 940px) {*/
 	body{
 		padding-top: 60px;
 	}
@@ -547,7 +547,7 @@ blockquote.pull-left{
 		padding-left: 0;
 		padding-right: 0;
 	}
-}
+/*}*/
 
 
 /** PP-Bootstrap **/
@@ -608,9 +608,11 @@ h1 { font-size: 1.5em; }
 }
 
 /* Readable.css overrides these - undoing overrides */
+
 .navbar-fixed-top { 
 	position: fixed;
 }
+
 .navbar {
 	margin-left: 0px;
 }
@@ -624,7 +626,7 @@ h1 { font-size: 1.5em; }
 }
 
 body {
-	padding-top: 60px !important;
+	padding-top: 0px !important;
 }
 .navbar-inner {
 	background-image: none;
@@ -740,4 +742,13 @@ body {
 #subscribe-reloaded-list input,
 #subscribe-reloaded-action-p label {
 	display: inline;
+}
+
+@media (max-width: 979px) {
+	.navbar .pull-left {
+		float: left;
+	}
+	.navbar .pull-right {
+		float: right;
+	}
 }
