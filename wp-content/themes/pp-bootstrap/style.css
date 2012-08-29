@@ -588,8 +588,8 @@ h1 { font-size: 1.5em; }
     width: 832px;
 }
 
-
-.filter-list ul { margin: 0 0 .65em 0; }
+.filter-list {margin-bottom: 30px; font-weight: bold;}
+.filter-list ul { margin: 0 0 .65em 0; font-weight: normal; }
 .filter-list ul li { list-style: none; }
 
 #lead-image {
