@@ -257,7 +257,7 @@
 							        <span class="icon-bar"></span>
 								</a>
 								
-								<?php bones_main_nav(); // Adjust using Menus in Wordpress Admin ?>
+								<?php  bones_main_nav(); // Adjust using Menus in Wordpress Admin ?>
 								
 								<?php if ( !is_user_logged_in() ) : ?>
 									<ul class="nav pull-left">									  

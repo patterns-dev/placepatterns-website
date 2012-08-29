@@ -50,15 +50,16 @@ function pp_thumbnail() {
 	if ( $id == 0 ) {
 		return false;
 	}
-
-	$html = get_the_post_thumbnail($id, array(150,150));
-	if(!empty($html)){
-		echo '<a href="' .get_permalink($id) .'">' .$html .'</a>';
-	} 
-	//Added for posts w/out thumbnail - EI 4 July 2012
-	else {
-		echo '<a href="' .get_permalink($id) .'"><img src="'. get_stylesheet_directory_uri() . '/images/NoPic.png"/></a>';
-	}
+	echo '<div class="thumbnail_container">';
+		$html = get_the_post_thumbnail($id, array(150,150));
+		if(!empty($html)){
+			echo '<a href="' .get_permalink($id) .'">' .$html .'</a>';
+		} 
+		//Added for posts w/out thumbnail - EI 4 July 2012
+		else {
+			echo '<a href="' .get_permalink($id) .'"><img src="'. get_stylesheet_directory_uri() . '/images/NoPic.png"/></a>';
+		}
+	echo '</div>';
 }
 
 function fields_register() {
@@ -112,11 +113,8 @@ function menus_register() {
 function my_get_posts( $query ) {
 	if ( is_home() || is_archive() ) {
 		$query->set( 'post_type', array( 'nav_menu_item', 'pattern', 'place') );
-
 	}
 	if ( is_home() ) {	
-		$query->set('orderby', 'meta_value');
-		$query->set('meta_key', '_thumbnail_id');
 		$query->set('orderby', 'modified');
 	}
 	return $query;

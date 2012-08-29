@@ -641,13 +641,9 @@ body {
     padding: 17px 20px 18px;
 }
 
-/* thumbnail List - taken from Birdsite
+/* thumbnail List - taken from Birdsite - and modified
 -------------------------------------------------------------------*/
-/*
-#content #thumbnail {
-	width: 610px;
-}
-*/
+
 #content #thumbnail:after {
 	content: ".";
 	clear: both;
@@ -712,6 +708,11 @@ body {
 	font-style: italic;
 	}
 
+.thumbnail_container {
+	width: 150px;
+	height: 150px;
+	overflow: hidden;
+}
 /*****/
 
 /* #conflict, */
@@ -750,4 +751,8 @@ body {
 	.navbar .pull-right {
 		float: right;
 	}
+}
+
+.post-227 div {
+	margin-bottom: 20px;
 }
