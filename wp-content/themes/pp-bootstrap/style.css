@@ -756,3 +756,12 @@ body {
 .post-227 div {
 	margin-bottom: 20px;
 }
+
+.pp-recent-comment-author {
+	background: none;
+	overflow: hidden;
+}
+
+.comment-line {
+	display: block;
+}
