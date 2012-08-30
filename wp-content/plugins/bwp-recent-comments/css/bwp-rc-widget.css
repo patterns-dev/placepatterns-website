@@ -1,0 +1,16 @@
+/* For widget page */
+.bwp-rc-widget-control p, .bwp-rc-widget-control p input, #wpcontent  .bwp-rc-widget-control select, #wpcontent  .bwp-rc-widget-control option {
+	font-size: 1em;
+}
+
+.bwp-rc-widget-control input.smallfat {
+	float: none;
+	width: 50px;
+}
+
+.bwp-rc-instance-settings {
+	display: none;
+	background-color: #f2f2f2;
+	padding: 10px;
+	border: 1px solid #cccccc;
+}

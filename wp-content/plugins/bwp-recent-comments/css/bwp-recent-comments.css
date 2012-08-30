@@ -1,0 +1,60 @@
+.recent-comment {
+	list-style-type: none;
+	margin-top: 10px;
+	/*ie fix*/ zoom: 1;
+}
+
+.recent-comment:after { content: "."; display: block; height: 0; font-size: 0; line-height: 0; clear: both; visibility: hidden; }
+
+.recent-comment .recent-comment-avatar {
+	display: block;
+	float: left;
+	line-height: 1em;
+	padding: 5px 0 0 0px;
+	width: 40px;
+}
+
+.recent-comment .avatar {
+	width: 40px;
+	height: 40px;
+	padding: 0px;
+	border: none;
+	margin: 0;
+}
+
+.recent-comment .icon-comment {
+	vertical-align: text-top;
+}
+
+.recent-comment-single {
+	display: block;
+	margin-left: 50px;
+}
+
+.recent-comment-tb .recent-comment-single {
+	display: inline;
+	margin-left: 0px;
+}
+
+.recent-comment-credit {
+	font-size: 0.8em;
+	color: #aaaaaa;
+}
+
+.recent-comment-author {
+	font-weight: bold;
+	background: url("../images/icon_comment.png") no-repeat right center;
+	padding-right: 20px;
+	overflow: hidden;
+}
+
+.recent-comment-text {
+	overflow: hidden;
+}
+
+/* ajax nav */
+.bwp-rc-ajax-nav {
+	list-style-type: none;
+	list-style-position: inside;
+	text-align: right;
+}
