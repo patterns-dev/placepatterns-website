@@ -765,3 +765,7 @@ body {
 .comment-line {
 	display: block;
 }
+
+.post-edit-link {
+	float: right;
+}
